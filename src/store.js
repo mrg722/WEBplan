@@ -29,7 +29,7 @@ function mondayKey(d) {
 function defaultNonNegotiables() {
   const days = [1, 2, 3, 4, 5, 6, 0];
   return [
-    { id: "default-water", name: "AGUA – 2 L", icon: "💧", target: "2 L al día", mode: "water", active: true, days, checks: {} },
+    { id: "default-water", name: "AGUA – 2 L", icon: "water", target: "2 L al día", mode: "water", active: true, days, checks: {} },
     { id: "default-training-1", name: "ENTRENAMIENTO 1", icon: "↔", target: "Sesión 1", mode: "training", slot: 1, active: true, days, checks: {} },
     { id: "default-training-2", name: "ENTRENAMIENTO 2", icon: "↔", target: "Sesión 2", mode: "training", slot: 2, active: true, days, checks: {} },
     { id: "default-training-3", name: "ENTRENAMIENTO 3", icon: "↔", target: "Sesión 3", mode: "training", slot: 3, active: true, days, checks: {} },

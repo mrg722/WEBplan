@@ -1,13 +1,13 @@
 export const DAY_KEYS = ["L", "M", "X", "J", "V", "S", "D"];
 export const DAY_NUMS = [1, 2, 3, 4, 5, 6, 0];
 export const MOODS = [
-  ["Excelente", "😄"],
-  ["Bien", "🙂"],
-  ["Normal", "😐"],
-  ["Enojado", "😠"],
-  ["Agotado", "😴"]
+  ["Excelente", ""],
+  ["Bien", ""],
+  ["Normal", ""],
+  ["Enojado", ""],
+  ["Agotado", ""]
 ];
-export const LEGACY_MOODS = [["Bajo", "😓"]];
+export const LEGACY_MOODS = [["Bajo", ""]];
 export const MOOD_SCORES = {
   Excelente: 5,
   Bien: 4,

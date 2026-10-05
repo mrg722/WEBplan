@@ -74,3 +74,8 @@ Sin endpoint, PLAN 2.0 funciona completamente de forma local.
 - token de sync, si existe, queda localmente en el navegador;
 - sin envíos externos por defecto;
 - notificaciones con permiso explícito.
+### Mobile navigation and weekly isolation
+
+The mobile surface mounts a fixed bottom navigation while desktop keeps its sidebar. The planner grid uses `week(currentDate())` and each task is stored with its concrete `date`; multi-day creation clones tasks instead of sharing references. Weekly aggregates continue to resolve through `weekKey(date)` and `weekly[weekKey]`.
+
+The supplied `public/icons/habits-atlas.png` is the visual source for the atlas sprite classes in `styles.css`. Existing persistence, synchronization, PWA registration and notification flows remain in place.

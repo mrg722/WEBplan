@@ -55,3 +55,6 @@ Por defecto los datos viven en el navegador. La sincronización entre pestañas 
 ## Android 8
 
 PLAN 2.0 usa tecnologías PWA estándar y se degrada con comprobaciones de capacidad. El soporte principal recomendado es Android 10+; Android 8/9 quedaron con versiones antiguas de Chrome y deben considerarse compatibilidad legacy.
+## Iteración móvil
+
+La planificación móvil usa tarjetas en dos columnas (una en pantallas muy estrechas), navegación inferior y el atlas de iconos entregado en `public/icons/habits-atlas.png`. Al crear una tarea se puede elegir explícitamente más de un día; se generan instancias independientes y las semanas se consultan mediante `weekKey()`.

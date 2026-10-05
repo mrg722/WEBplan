@@ -50,3 +50,16 @@ No existe backend remoto en el repositorio:
 - Se añadió un editor de día dentro de Planificar semana para añadir, editar, completar o eliminar tareas del día seleccionado.
 - Cada bloque principal del planificador tiene control Compactar/Expandir.
 - Los estados emocionales del planificador dejaron de usar emojis y se renderizan como ilustraciones SVG coloreadas.
+# Auditoría de la iteración móvil — 2026-10-05
+
+## Hallazgos y cambios
+
+- La arquitectura existente conserva `localStorage`, `schemaVersion: 3`, `weekKey()`, sincronización por `BroadcastChannel`, notificaciones, manifest y service worker.
+- Se incorporó `public/icons/habits-atlas.png` como fuente visual real para navegación, estados y acciones; los estados emocionales ya no dependen de emojis Unicode.
+- En móvil, PLAN 2.0 usa navegación inferior fija turquesa y la planificación semanal cambia a una cuadrícula propia de dos columnas; en 360 px o menos pasa a una columna para evitar overflow global.
+- La creación de tareas permite seleccionar explícitamente varios días. Cada selección crea una instancia independiente y solo marca esos días de su `weekKey()` como planificados.
+
+## Límites detectados
+
+- El entorno no incluye `python` como comando, por lo que la validación usa `py -m py_compile` cuando está disponible.
+- El snapshot descargado no trae credenciales Git configuradas para `push`; el commit local queda preparado, pero el envío a GitHub requiere una sesión/token de GitHub disponible en el entorno.

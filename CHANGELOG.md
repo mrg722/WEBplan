@@ -29,3 +29,9 @@
 ## 1.0.0
 
 - Primera implementación funcional sin dependencias externas.
+## 2026-10-05 — Mobile atlas pass
+
+- Added the provided colorful icon atlas as a reusable public asset.
+- Added responsive mobile planner cards and fixed bottom navigation.
+- Added explicit multi-day task creation with independent instances.
+- Removed Unicode mood glyphs from the mood data model.

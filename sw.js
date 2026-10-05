@@ -11,7 +11,8 @@ const SHELL = [
   "./src/notifications.js",
   "./public/icons/icon.svg",
   "./public/icons/icon-192.svg",
-  "./public/icons/icon-512.svg"
+  "./public/icons/icon-512.svg",
+  "./public/icons/habits-atlas.png"
 ];
 
 self.addEventListener("install", event => {
