@@ -555,3 +555,34 @@ body{overflow-x:hidden;padding-bottom:0}
   .week-day-grid{grid-template-columns:1fr!important;gap:8px}.day-summary-card{min-height:0;display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:3px 9px;align-items:center;padding:11px}.day-summary-card .day-name{grid-column:1}.day-summary-card .day-num{grid-column:1;grid-row:2}.day-summary-card .day-task-count,.day-summary-card .day-score{grid-column:2}.day-summary-card .day-dots{grid-column:2}.day-summary-card .day-mood{grid-column:3;grid-row:1 / span 2}.day-summary-card .day-mood svg{width:34px;height:34px}.insight-card{grid-template-columns:36px minmax(0,1fr);padding:11px}.insight-card p{font-size:10px}
 }
 @media (max-width:360px){.planner-week-grid{grid-template-columns:1fr!important}.day-date-nav{grid-template-columns:32px minmax(0,1fr) 32px}.day-date-nav .today-btn{grid-column:1 / -1;justify-self:stretch}.day-save-row{bottom:calc(64px + env(safe-area-inset-bottom))}.day-save-row .outline-btn{display:none}.bottom-nav{height:58px}.bottom-nav-icon{height:24px}}
+
+
+/* illustrated interaction cleanup */
+.ui-svg{display:block}
+.brand-leaf{display:grid;place-items:center;width:32px;height:32px}
+.brand-leaf .ui-svg{width:32px;height:32px}
+.section-icon svg,.planner-block-icon svg,.metric-icon svg,.goal-icon svg,.bottom-nav-icon svg,.icon-btn svg,.mobile-menu svg,.nav-item svg,.top-date button svg,.row-action svg,.task-check svg,.tiny-check svg,.habit-check svg,.day-plan-check svg,.btn-icon svg,.support-note-icon svg,.planner-belief svg{display:block}
+.row-action{width:27px;height:27px;display:grid;place-items:center;padding:0;border-radius:8px}
+.row-action svg{width:16px;height:16px}
+.task-check svg,.tiny-check svg,.habit-check svg{width:13px;height:13px}
+.section-head .chevron{display:grid;place-items:center;width:22px;height:22px}
+.section-head .chevron svg{width:14px;height:14px}
+.bottom-nav-item.active .bottom-nav-icon svg{filter:none}
+.now-main{min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.now-action{display:flex;justify-content:flex-end;align-items:center;margin-top:11px}
+.now-main .primary-btn{float:none;margin:0;max-width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.day-plan-toggle{display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+.day-plan-check{display:grid;place-items:center;line-height:0}
+.day-plan-check svg{width:17px;height:17px}
+.planner-mood svg{width:27px;height:27px}
+.planner-belief{display:flex;align-items:center;justify-content:center;gap:5px}
+.month-nav{display:flex;gap:7px}
+.month-nav button{display:inline-grid;place-items:center}
+.month-nav button svg{width:18px;height:18px}
+.modal-head .icon-btn svg{width:17px;height:17px}
+@media (max-width:760px){
+  .now-action{justify-content:stretch}
+  .now-action .primary-btn{width:100%}
+  .row-action{width:25px;height:25px}
+  .row-action svg{width:15px;height:15px}
+}
