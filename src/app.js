@@ -167,6 +167,12 @@ function decoratePlannerBlocks(){
   document.querySelectorAll(".planning-page .planner-block").forEach((block,index)=>{
     const id=ids[index]||("extra-"+index);block.dataset.planBlock=id;
     const head=block.querySelector(".planner-block-head");if(!head)return;
+    const iconMap={week-grid:"weekly",nonneg:"shield",habits:"habit",priorities:"target",todos:"task",balance:"success",reflection:"notes",goals:"mountain",tracking:"chart"};
+    const titleWrap=head.querySelector(".planner-block-title")||head.firstElementChild;
+    if(titleWrap&&!titleWrap.querySelector(".planner-block-icon")){
+      const holder=document.createElement("span");holder.className="planner-block-icon";holder.innerHTML=illustratedIcon(iconMap[id]||"weekly",28);
+      titleWrap.prepend(holder);
+    }
     let actions=head.querySelector(".planner-block-actions");
     if(!actions){actions=document.createElement("div");actions.className="planner-block-actions";head.appendChild(actions);}
     const compact=document.createElement("button");compact.className="compact-toggle";compact.type="button";compact.textContent=state.open["plan:"+id]===false?"Expandir":"Compactar";
