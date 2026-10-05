@@ -1,49 +1,88 @@
-# Arquitectura limpia de PLAN 2.0
+# Arquitectura PLAN 2.0 v2
 
-## 1. Capa de presentación
+## Presentación
 
-`index.html` es el punto de entrada mínimo. `src/app.js` compone la interfaz mediante funciones de render independientes: Día, Semana, Mes, Metas, Progreso, Insights, Configuración y modales.
+`index.html` es el punto de entrada. `src/app.js` mantiene el estado de la SPA, renderiza Día/Semana/Mes y centraliza eventos. `src/styles.css` contiene el sistema visual responsive.
 
-La UI utiliza atributos `data-action`, de modo que la interacción se mantiene centralizada en delegación de eventos y no depende de una librería externa.
+## Dominio
 
-## 2. Capa de dominio / cálculos
+Las entidades están separadas:
 
-`src/utils.js` contiene operaciones puras para fechas, semanas, porcentajes, horas, escape de texto y cálculos repetibles. Esto evita mezclar lógica de fechas dentro de cada tarjeta.
+- tareas
+- no negociables
+- prioridades
+- hábitos
+- entrenamiento
+- metas
+- registros diarios
+- balances semanales
+- configuración
+- notificaciones
+- sincronización
 
-## 3. Estado y persistencia
+Las relaciones importantes se guardan por IDs:
 
-`src/store.js` es la frontera de persistencia. Hoy usa `localStorage`, pero las vistas no necesitan conocer cómo se guarda la información.
+`meta → prioridades/tareas/hábitos`
 
-`src/data.js` contiene el dataset inicial de demostración.
+`prioridad → tareas`
 
-## 4. Modelo
+`tarea → prioridad/meta`
 
-Las entidades principales son:
+## Persistencia
 
-- `tasks`: tareas con fecha, hora, prioridad, duración, estado y notas.
-- `nonNegotiables`: acuerdos personales configurables.
-- `habits`: seguimiento diario por fecha.
-- `priorities`: máximo 3 prioridades activas de la semana.
-- `training`: registros simples de entrenamiento.
-- `goals`: metas de largo plazo con referencias a prioridades/tareas/hábitos.
-- `days`: registro diario de emoción, energía, estudio, sueño, agua, pasos, peso, reflexión y plan mínimo.
-- `weekly`: balance de la semana.
-- `settings`: objetivos que alimentan los indicadores.
+`src/store.js` normaliza los datos y persiste en `localStorage` con la clave `plan20-data-v2`. La aplicación no carga la antigua demo v1.
 
-## 5. Regla de “¿Qué hago ahora?”
+También existe sincronización de la misma aplicación entre pestañas con `BroadcastChannel` y el evento `storage`.
 
-No usa IA. Selecciona la primera tarea pendiente del día ordenada por hora y, si no existe, toma una pendiente sin fecha. La decisión es simple, transparente y predecible.
+## Cálculos
 
-## 6. Futuro backend
+`src/utils.js` concentra fechas locales, semana ISO, formato de fechas, porcentajes y minutos.
 
-Para migrar a backend:
+`app.js` calcula cumplimiento, progreso de prioridades/metas, métricas semanales y observaciones descriptivas.
 
-1. Mantener los mismos objetos de dominio.
-2. Reemplazar `load/save` por cliente API.
-3. Agregar autenticación y un `userId` a las entidades.
-4. Persistir relaciones Meta → Prioridad → Tarea → Completado y Meta → Hábito.
-5. Añadir validaciones de servidor.
+## ¿Qué hago ahora?
 
-## 7. Principios UX
+El selector prioriza:
 
-La pantalla prioriza `ABRIR → VER → HACER → MARCAR → CONTINUAR`. Las tarjetas se pueden plegar y muestran un resumen al cerrarse. Día es la vista operativa; Semana y Mes son para revisión y contexto; Progreso e Insights son para mirar hacia atrás.
+1. tareas pendientes del día;
+2. prioridad alta/media/baja;
+3. tareas vencidas si hoy corresponde;
+4. cercanía temporal;
+5. duración corta como desempate.
+
+No usa IA.
+
+## PWA
+
+- `manifest.webmanifest`
+- `sw.js`
+- iconos PNG/SVG
+- caché offline
+- `beforeinstallprompt`
+- `push`
+- `notificationclick`
+
+## Notificaciones
+
+Hay dos capas:
+
+**Local:** el cliente revisa las tareas y usa `ServiceWorkerRegistration.showNotification()` cuando la app está ejecutándose y el usuario concedió permiso.
+
+**Web Push:** el service worker acepta eventos `push`. Falta únicamente conectar un backend que almacene PushSubscriptions y envíe mensajes con VAPID.
+
+## Sincronización remota
+
+La UI acepta un endpoint REST configurable:
+
+- GET: puede devolver `{data: {...}, updatedAt: "..."}` o directamente el objeto de datos.
+- PUT: recibe `{data: {...}, updatedAt: "..."}`.
+
+El cliente compara `meta.updatedAt` y usa la versión remota más nueva. Sin endpoint, no hay sincronización externa.
+
+## Seguridad y privacidad
+
+- escape de contenido antes de insertar texto dinámico;
+- no se usan secretos en el frontend;
+- token de sincronización, si se configura, queda localmente en el navegador;
+- no se envían datos a terceros por defecto;
+- notificaciones requieren permiso explícito.
