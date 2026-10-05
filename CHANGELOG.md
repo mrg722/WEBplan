@@ -35,3 +35,12 @@
 - Added responsive mobile planner cards and fixed bottom navigation.
 - Added explicit multi-day task creation with independent instances.
 - Removed Unicode mood glyphs from the mood data model.
+
+## 2026-10-05 — Final icon and interaction correction
+
+- Consolidated visible UI icons into a single illustrated SVG system; no Unicode glyph is used as the visual control icon.
+- Fixed the incorrect success icon shown in «¿Qué hago ahora?».
+- Restored COSAS POR HACER and PLAN MÍNIMO · DÍAS DIFÍCILES in the day view.
+- Restored explicit visual checked/unchecked states for weekly day planning and execution controls.
+- Replaced free-text icon inputs for goals and non-negotiables with controlled icon choices while preserving legacy values.
+- Fixed mobile overflow for the «Marcar completada» action and standardized edit/delete/navigation/add/save controls.
