@@ -5,6 +5,8 @@
   "type": "module",
   "description": "PLAN 2.0 — planner personal PWA sin dependencias externas",
   "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:mobile": "node tests/mobile.e2e.cjs",
     "start": "python server.py",
     "dev": "python server.py",
     "check": "node --check src/app.js && node --check src/data.js && node --check src/store.js && node --check src/utils.js && node --check src/notifications.js"

@@ -1,4 +1,5 @@
 import { EMPTY_DATA, deepClone } from "./data.js";
+import { weekKey } from "./utils.js";
 
 const KEY = "plan20-data-v2";
 const LEGACY_KEYS = ["plan20-data-v1", "plan20-data"];
@@ -11,20 +12,7 @@ try {
   channel = null;
 }
 
-function dayKey(d) {
-  const x = new Date(d);
-  const y = x.getFullYear();
-  const m = String(x.getMonth() + 1).padStart(2, "0");
-  const day = String(x.getDate()).padStart(2, "0");
-  return y + "-" + m + "-" + day;
-}
-
-function mondayKey(d) {
-  const x = new Date(d);
-  x.setHours(12, 0, 0, 0);
-  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
-  return dayKey(x);
-}
+const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
 
 function defaultNonNegotiables() {
   const days = [1, 2, 3, 4, 5, 6, 0];
@@ -50,7 +38,8 @@ function emptyWeek() {
 }
 
 export function ensureWeek(data, weekStart) {
-  const key = weekStart || mondayKey(new Date());
+  const key = weekStart || weekKey(new Date());
+  if (!isRecord(data.weekly)) data.weekly = {};
   if (!data.weekly[key]) data.weekly[key] = emptyWeek();
   const w = data.weekly[key];
   w.plannedDays = w.plannedDays && typeof w.plannedDays === "object" ? w.plannedDays : {};
@@ -60,8 +49,10 @@ export function ensureWeek(data, weekStart) {
 }
 
 function normalize(data) {
+  if (!isRecord(data)) throw new TypeError("El respaldo debe ser un objeto.");
+  data = deepClone(data);
   const base = deepClone(EMPTY_DATA);
-  const merged = Object.assign(base, data || {});
+  const merged = Object.assign({}, base, data);
   merged.settings = Object.assign(base.settings, data?.settings || {});
   merged.notifications = Object.assign(base.notifications, data?.notifications || {});
   merged.sync = Object.assign(base.sync, data?.sync || {});
@@ -87,33 +78,42 @@ function firstRunData() {
 }
 
 export function load() {
-  try {
-    let raw = localStorage.getItem(KEY);
-    let usingLegacy = false;
-    if (!raw) {
-      for (const legacyKey of LEGACY_KEYS) {
-        raw = localStorage.getItem(legacyKey);
-        if (raw) {
-          usingLegacy = true;
-          break;
-        }
-      }
+  let primaryExists = true;
+  for (const storageKey of [KEY, ...LEGACY_KEYS]) {
+    let data;
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (storageKey === KEY) primaryExists = raw !== null;
+      if (raw === null) continue;
+      data = normalize(JSON.parse(raw));
+    } catch {
+      // An unreadable candidate must never erase another saved version.
+      continue;
     }
-    const data = raw ? normalize(JSON.parse(raw)) : firstRunData();
-    if (usingLegacy) {
+    if (storageKey !== KEY) {
       data.meta.migratedFromLegacy = true;
       data.meta.migratedAt = new Date().toISOString();
-      localStorage.setItem(KEY, JSON.stringify(data));
+      // Keep the recovered data usable even if storage is full or disabled.
+      if (!primaryExists) {
+        try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {}
+      }
     }
     return data;
-  } catch {
-    return firstRunData();
   }
+  return firstRunData();
 }
 
 export function save(data, broadcast = true) {
   const normalized = normalize(data);
   normalized.meta.updatedAt = new Date().toISOString();
+  const existing = localStorage.getItem(KEY);
+  if (existing !== null) {
+    try {
+      normalize(JSON.parse(existing));
+    } catch {
+      throw new Error("Los datos guardados no se pueden leer. Exporta un respaldo antes de restaurarlos.");
+    }
+  }
   localStorage.setItem(KEY, JSON.stringify(normalized));
   if (broadcast && channel) {
     try { channel.postMessage({ type: "data-updated", data: normalized }); } catch {}
@@ -126,7 +126,8 @@ export function replace(data, broadcast = true) {
 }
 
 export function reset() {
-  localStorage.removeItem(KEY);
+  // A persisted empty state prevents old legacy data reappearing on reload.
+  localStorage.setItem(KEY, JSON.stringify(firstRunData()));
   if (channel) {
     try { channel.postMessage({ type: "data-reset" }); } catch {}
   }
@@ -134,6 +135,7 @@ export function reset() {
 }
 
 export function ensureDay(data, dateKey) {
+  if (!isRecord(data.days)) data.days = {};
   if (!data.days[dateKey]) {
     data.days[dateKey] = {
       mood: "",

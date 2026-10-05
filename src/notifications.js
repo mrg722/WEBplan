@@ -2,9 +2,12 @@ const SENT_KEY = "plan20-notified-v2";
 const ICON = "./public/icons/icon-192.svg";
 
 function readSent() {
-  try { return JSON.parse(localStorage.getItem(SENT_KEY) || "{}"); } catch { return {}; }
+  try {
+    const sent = JSON.parse(localStorage.getItem(SENT_KEY) || "{}");
+    return sent && typeof sent === "object" && !Array.isArray(sent) ? sent : {};
+  } catch { return {}; }
 }
-function writeSent(v) { localStorage.setItem(SENT_KEY, JSON.stringify(v)); }
+function writeSent(v) { try { localStorage.setItem(SENT_KEY, JSON.stringify(v)); } catch {} }
 
 export function notificationSupported() {
   return "Notification" in window;
@@ -17,12 +20,15 @@ export async function requestPermission() {
 
 export async function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return null;
-  try { return await navigator.serviceWorker.register("./sw.js", { scope: "./" }); } catch { return null; }
+  try { return await navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" }); } catch { return null; }
 }
 
 export async function getRegistration() {
   if (!("serviceWorker" in navigator)) return null;
-  try { return await navigator.serviceWorker.ready; } catch { return null; }
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    return reg?.active ? reg : null;
+  } catch { return null; }
 }
 
 function base64ToBytes(base64) {
@@ -73,14 +79,12 @@ export async function testNotification(title = "PLAN 2.0", body = "Las notificac
   }
 }
 
-function alreadySent(id, stamp) {
+function markSent(id, stamp) {
   const sent = readSent();
-  if (sent[id] === stamp) return true;
   sent[id] = stamp;
   const keys = Object.keys(sent);
   if (keys.length > 120) for (const k of keys.slice(0, keys.length - 120)) delete sent[k];
   writeSent(sent);
-  return false;
 }
 
 export function checkForegroundReminders(data, dateKey) {
@@ -88,7 +92,8 @@ export function checkForegroundReminders(data, dateKey) {
   const now = new Date();
   if (dateKey !== localKey(now)) return;
   const nowMin = now.getHours() * 60 + now.getMinutes();
-  const lead = Math.max(0, Number(data.notifications.leadMinutes) || 10);
+  const configuredLead = Number(data.notifications.leadMinutes ?? 10);
+  const lead = Number.isFinite(configuredLead) ? Math.max(0, configuredLead) : 10;
   for (const task of data.tasks || []) {
     if (task.completed || task.date !== dateKey || !task.time) continue;
     const [h, m] = task.time.split(":").map(Number);
@@ -97,13 +102,17 @@ export function checkForegroundReminders(data, dateKey) {
     let stamp = "";
     if (delta >= 0 && delta <= lead) stamp = "due-" + dateKey + "-" + task.id;
     else if (data.notifications.overdue && delta < 0 && delta >= -60) stamp = "overdue-" + dateKey + "-" + task.id;
-    if (!stamp || alreadySent(task.id + "-" + stamp, stamp)) continue;
+    const sentId = task.id + "-" + stamp;
+    if (!stamp || readSent()[sentId] === stamp) continue;
     const when = delta >= 0 ? "en " + delta + " min" : "está pendiente";
-    new Notification("PLAN 2.0 · " + task.title, {
-      body: task.time + " · " + when,
-      tag: "plan20-task-" + task.id,
-      icon: ICON
-    });
+    try {
+      new Notification("PLAN 2.0 · " + task.title, {
+        body: task.time + " · " + when,
+        tag: "plan20-task-" + task.id,
+        icon: ICON
+      });
+      markSent(sentId, stamp);
+    } catch {}
   }
 }
 

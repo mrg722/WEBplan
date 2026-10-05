@@ -1,4 +1,7 @@
-const CACHE = "plan20-v6";
+// Cache ownership includes the deployment scope (several apps may share an origin).
+const CACHE_PREFIX = "plan20-" + encodeURIComponent(self.registration.scope) + "-v";
+const CACHE_VERSION = 7;
+const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const SHELL = [
   "./",
   "./index.html",
@@ -13,36 +16,37 @@ const SHELL = [
   "./public/icons/icon-192.svg",
   "./public/icons/icon-512.svg"
 ];
+const SHELL_URLS = new Set(SHELL.map(path => new URL(path, self.registration.scope).href));
+const INDEX_URL = new URL("./index.html", self.registration.scope).href;
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(
+    [...SHELL_URLS].map(url => new Request(url, { cache: "reload" }))
+  )));
+  // Let existing tabs finish with their current shell before activating an update.
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())
+    // Unscoped legacy caches (including v6) have ambiguous ownership; retain them.
+    caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith(CACHE_PREFIX) && /^\d+$/.test(k.slice(CACHE_PREFIX.length)) && Number(k.slice(CACHE_PREFIX.length)) < CACHE_VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
+  if (url.origin !== self.location.origin || !url.href.startsWith(self.registration.scope)) return;
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request).then(response => {
-        const copy=response.clone();
-        caches.open(CACHE).then(cache=>cache.put(event.request,copy));
-        return response;
-      }).catch(()=>caches.match("./index.html"))
+      // Keep HTML and modules from the same installed release, online and offline.
+      caches.open(CACHE).then(cache => cache.match(INDEX_URL)).then(cached => cached || fetch(event.request))
     );
     return;
   }
-  event.respondWith(caches.match(event.request).then(cached=>cached || fetch(event.request).then(response=>{
-    const copy=response.clone();
-    caches.open(CACHE).then(cache=>cache.put(event.request,copy));
-    return response;
-  })));
+  // In particular, never cache same-origin sync endpoints or unrelated apps.
+  if (!SHELL_URLS.has(url.href)) return;
+  event.respondWith(caches.open(CACHE).then(cache => cache.match(event.request)).then(cached => cached || fetch(event.request)));
 });
 
 self.addEventListener("message", event => {
@@ -74,11 +78,17 @@ self.addEventListener("push", event => {
 
 self.addEventListener("notificationclick", event => {
   event.notification.close();
-  const target=new URL(event.notification.data?.url||"./",self.location.origin).href;
+  let target = self.registration.scope;
+  try {
+    const candidate = new URL(event.notification.data?.url || "./", self.registration.scope);
+    if (candidate.origin === self.location.origin && candidate.href.startsWith(self.registration.scope)) target = candidate.href;
+  } catch {}
   event.waitUntil(
     self.clients.matchAll({type:"window",includeUncontrolled:true}).then(clients=>{
       for(const client of clients){
-        if("focus" in client){client.navigate(target);return client.focus();}
+        if(client.url?.startsWith(self.registration.scope) && "focus" in client){
+          return Promise.resolve(client.navigate(target)).then(navigated => (navigated || client).focus());
+        }
       }
       if(self.clients.openWindow)return self.clients.openWindow(target);
       return undefined;

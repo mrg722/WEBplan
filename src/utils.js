@@ -21,8 +21,13 @@ export const MOOD_SCORES = {
   Bajo: 2
 };
 
+// ISO calendar dates describe a local day, not midnight UTC.
+function localDate(d) {
+  return typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d) ? parse(d) : new Date(d);
+}
+
 export function key(d) {
-  const x = new Date(d);
+  const x = localDate(d);
   const y = x.getFullYear();
   const m = String(x.getMonth() + 1).padStart(2, "0");
   const day = String(x.getDate()).padStart(2, "0");
@@ -39,14 +44,15 @@ export function today() {
 }
 
 export function add(date, days) {
-  const x = new Date(date);
+  const x = localDate(date);
+  x.setHours(12, 0, 0, 0);
   x.setDate(x.getDate() + Number(days || 0));
   x.setHours(12, 0, 0, 0);
   return x;
 }
 
 export function startWeek(d) {
-  const x = new Date(d);
+  const x = localDate(d);
   x.setHours(12, 0, 0, 0);
   x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
   return x;
@@ -58,7 +64,7 @@ export function week(d) {
 }
 
 export function weekKey(d) {
-  return key(startWeek(typeof d === "string" ? parse(d) : d));
+  return key(startWeek(d));
 }
 
 export function monthGrid(d) {
@@ -116,12 +122,14 @@ export function escape(s = "") {
 }
 
 export function weekNumber(d) {
-  const target = new Date(d);
+  const target = localDate(d);
   target.setHours(12, 0, 0, 0);
   const thursday = new Date(target);
   thursday.setDate(target.getDate() + 4 - (target.getDay() || 7));
-  const yearStart = new Date(thursday.getFullYear(), 0, 1, 12);
-  return Math.ceil((((thursday - yearStart) / 86400000) + 1) / 7);
+  // Compare calendar days in UTC so DST cannot add a fractional day.
+  const yearStart = Date.UTC(thursday.getFullYear(), 0, 1);
+  const day = Date.UTC(thursday.getFullYear(), thursday.getMonth(), thursday.getDate());
+  return Math.ceil((((day - yearStart) / 86400000) + 1) / 7);
 }
 
 export function weekLabel(d) {
@@ -139,7 +147,7 @@ export function timeEnd(time, minutes) {
 export function minutesFromTime(time) {
   if (!time) return null;
   const [h, m] = String(time).split(":").map(Number);
-  if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+  if (!/^\d{1,2}:\d{2}$/.test(String(time)) || !Number.isInteger(h) || !Number.isInteger(m) || h < 0 || h > 23 || m < 0 || m > 59) return null;
   return (h * 60) + m;
 }
 
