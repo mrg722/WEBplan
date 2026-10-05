@@ -1,88 +1,76 @@
-# Arquitectura PLAN 2.0 v2
+# Arquitectura PLAN 2.0
 
 ## Presentación
 
-`index.html` es el punto de entrada. `src/app.js` mantiene el estado de la SPA, renderiza Día/Semana/Mes y centraliza eventos. `src/styles.css` contiene el sistema visual responsive.
+index.html es el punto de entrada. src/app.js mantiene el estado de la SPA y renderiza PLANIFICACIÓN SEMANAL, Día, Semana, Mes, Metas, Progreso, Insights y Configuración. src/styles.css contiene el sistema visual responsive.
+
+## Flujo principal
+
+PLANIFICACIÓN SEMANAL → EJECUCIÓN DIARIA → SEGUIMIENTO → PROGRESO → REFLEXIÓN
+
+La planificación semanal es la fuente de la ejecución. Las tareas siguen siendo una sola entidad; su fecha las ubica en el día y la semana correspondiente.
 
 ## Dominio
 
-Las entidades están separadas:
+Las entidades principales son tareas, no negociables, prioridades, hábitos, entrenamiento, metas, registros diarios, datos semanales, configuración, notificaciones y sincronización.
 
-- tareas
-- no negociables
-- prioridades
-- hábitos
-- entrenamiento
-- metas
-- registros diarios
-- balances semanales
-- configuración
-- notificaciones
-- sincronización
+Relaciones principales:
+meta → prioridades/tareas/hábitos
+prioridad → tareas
+tarea → prioridad/meta
 
-Las relaciones importantes se guardan por IDs:
+La consistencia de prioridad se repara al cargar y al guardar.
 
-`meta → prioridades/tareas/hábitos`
+## Datos y persistencia
 
-`prioridad → tareas`
+src/data.js define schema 3.
 
-`tarea → prioridad/meta`
+src/store.js:
+- normaliza datos;
+- mantiene localStorage;
+- migra claves legacy detectadas;
+- crea datos semanales con ensureWeek;
+- guarda planificación, balance y reflexión por weekKey;
+- sincroniza pestañas con BroadcastChannel y storage.
 
-## Persistencia
-
-`src/store.js` normaliza los datos y persiste en `localStorage` con la clave `plan20-data-v2`. La aplicación no carga la antigua demo v1.
-
-También existe sincronización de la misma aplicación entre pestañas con `BroadcastChannel` y el evento `storage`.
+No existe backend por defecto.
 
 ## Cálculos
 
-`src/utils.js` concentra fechas locales, semana ISO, formato de fechas, porcentajes y minutos.
+src/utils.js centraliza claves de fecha locales, semanas, porcentajes, formatos y estados de ánimo.
 
-`app.js` calcula cumplimiento, progreso de prioridades/metas, métricas semanales y observaciones descriptivas.
-
-## ¿Qué hago ahora?
-
-El selector prioriza:
-
-1. tareas pendientes del día;
-2. prioridad alta/media/baja;
-3. tareas vencidas si hoy corresponde;
-4. cercanía temporal;
-5. duración corta como desempate.
-
-No usa IA.
+app.js calcula cumplimiento diario, cumplimiento semanal sobre días planificados, progreso de prioridades/metas, métricas semanales e Insights descriptivos.
 
 ## PWA
 
-- `manifest.webmanifest`
-- `sw.js`
-- iconos PNG/SVG
-- caché offline
-- `beforeinstallprompt`
-- `push`
-- `notificationclick`
+manifest.webmanifest
+sw.js
+iconos SVG en public/icons
+caché offline
+beforeinstallprompt
+push
+notificationclick
+
+El service worker incluye src/notifications.js en su shell offline y usa una caché versionada.
 
 ## Notificaciones
 
-Hay dos capas:
+Las notificaciones locales revisan tareas mientras la app está activa y requieren permiso del usuario. El service worker también procesa eventos push.
 
-**Local:** el cliente revisa las tareas y usa `ServiceWorkerRegistration.showNotification()` cuando la app está ejecutándose y el usuario concedió permiso.
-
-**Web Push:** el service worker acepta eventos `push`. Falta únicamente conectar un backend que almacene PushSubscriptions y envíe mensajes con VAPID.
+Web Push con la app cerrada requiere un backend que almacene suscripciones y use VAPID. No se inventa ese backend dentro de este repo.
 
 ## Sincronización remota
 
-La UI acepta un endpoint REST configurable:
+Configuración permite un endpoint REST opcional:
+GET para consultar la versión remota.
+PUT para subir data y updatedAt.
 
-- GET: puede devolver `{data: {...}, updatedAt: "..."}` o directamente el objeto de datos.
-- PUT: recibe `{data: {...}, updatedAt: "..."}`.
-
-El cliente compara `meta.updatedAt` y usa la versión remota más nueva. Sin endpoint, no hay sincronización externa.
+Sin endpoint, PLAN 2.0 funciona completamente de forma local.
 
 ## Seguridad y privacidad
 
-- escape de contenido antes de insertar texto dinámico;
-- no se usan secretos en el frontend;
-- token de sincronización, si se configura, queda localmente en el navegador;
-- no se envían datos a terceros por defecto;
-- notificaciones requieren permiso explícito.
+- valores dinámicos escapados antes de renderizar;
+- sin secretos de backend en el frontend;
+- token de sync, si existe, queda localmente en el navegador;
+- sin envíos externos por defecto;
+- notificaciones con permiso explícito.
