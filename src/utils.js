@@ -5,7 +5,9 @@ export const MOODS = [
   ["Bien", ""],
   ["Normal", ""],
   ["Enojado", ""],
-  ["Agotado", ""]
+  ["Agotado", ""],
+  ["Motivado", ""],
+  ["Calmado", ""]
 ];
 export const LEGACY_MOODS = [["Bajo", ""]];
 export const MOOD_SCORES = {
@@ -14,6 +16,8 @@ export const MOOD_SCORES = {
   Normal: 3,
   Enojado: 2,
   Agotado: 1,
+  Motivado: 5,
+  Calmado: 4,
   Bajo: 2
 };
 
