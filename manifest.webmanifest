@@ -1,0 +1,21 @@
+{
+  "name":"PLAN 2.0",
+  "short_name":"PLAN 2.0",
+  "description":"Organiza · Enfoca · Actúa · Logra",
+  "lang":"es-CL",
+  "id":"./",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "display_override":["window-controls-overlay","standalone"],
+  "orientation":"any",
+  "theme_color":"#eef5fb",
+  "background_color":"#eef5fb",
+  "prefer_related_applications":false,
+  "categories":["productivity","lifestyle"],
+  "icons":[
+    {"src":"./public/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./public/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"},
+    {"src":"./public/icons/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}
+  ]
+}
