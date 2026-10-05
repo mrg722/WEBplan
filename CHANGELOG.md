@@ -1,23 +1,26 @@
 # Changelog
 
-## 2.0.0
+## 1.1.0 — reparación y PWA
 
-- Corrección completa de layout del sidebar.
-- Corrección del solapamiento de “Nueva tarea”.
-- Planificación inicial vacía.
-- Fecha inicial basada en calendario local.
-- Claves de fecha sin UTC accidental.
-- Bandeja de tareas sin fecha real.
-- Prioridades relacionadas con tareas.
-- Metas relacionadas con prioridades, tareas y hábitos.
-- Progreso ligado a la semana seleccionada.
-- Insights reescritos sobre cumplimiento real.
-- Hábitos configurables.
-- Entrenamiento con percepción general.
-- PWA instalable.
-- Service worker offline.
-- Notificaciones locales.
-- Preparación de Web Push.
-- Sincronización entre pestañas.
-- Export/import de respaldo.
-- Endpoint REST opcional.
+- Inicio vacío para que el usuario haga su propia planificación.
+- Fecha local actual como punto de entrada.
+- Corrección de claves de fecha y semanas.
+- Barra lateral con SVG correctamente trazados.
+- Botones de acciones de secciones sin solapamiento.
+- Modal estable al guardar y al hacer clic dentro del formulario.
+- Tareas con opción explícita de quedar sin fecha.
+- Prioridades semanales con tareas relacionadas y progreso calculado.
+- Hábitos con días activos y frecuencia.
+- No negociables configurables y eliminables.
+- Entrenamiento con percepción y eliminación.
+- Metas con relaciones editables.
+- Cumplimiento e Insights revisados.
+- Balance diario y semanal con guardado mientras se escribe.
+- Manifest PWA, service worker, caché offline e instalación.
+- Notificaciones web en primer plano y soporte de suscripción Web Push.
+- Workflow de GitHub Pages.
+- Documentación actualizada.
+
+## 1.0.0
+
+- Primera implementación funcional sin dependencias externas.
