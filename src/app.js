@@ -205,6 +205,15 @@ function decorateIcons(){
     b.innerHTML=illustratedIcon(planned?"check":"check-empty",17)+'<span>'+(planned?"Planificado":"Planificar")+'</span>';
   });
   document.querySelectorAll(".planner-belief span").forEach(e=>e.innerHTML=illustratedIcon("heart",16));
+  document.querySelectorAll(".now-main .primary-btn").forEach(b=>{
+    if(!b.querySelector("svg")) b.innerHTML=illustratedIcon("check",18)+'<span>Marcar completada</span>';
+  });
+  document.querySelectorAll(".modal-actions .primary-btn").forEach(b=>{
+    if(!b.querySelector("svg")) b.innerHTML=illustratedIcon("save",16)+'<span>Guardar</span>';
+  });
+  document.querySelectorAll(".modal-actions .outline-btn").forEach(b=>{
+    if(!b.querySelector("svg")&&b.textContent.trim()==="Cancelar") b.innerHTML=illustratedIcon("close",15)+'<span>Cancelar</span>';
+  });
   document.querySelectorAll("button").forEach(b=>{
     if(b.querySelector("svg")) return;
     const t=b.textContent.trim();
