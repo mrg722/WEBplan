@@ -205,3 +205,9 @@ h1,h2,h3,p { margin:0; }
   .section-summary{max-width:72px}
   .section-title{font-size:10px}
 }
+
+
+.boot-screen{min-height:100vh;display:grid;place-items:center;align-content:center;gap:7px;color:#173862;background:linear-gradient(180deg,#f1f7fd,#edf4f9);text-align:center}
+.boot-screen .boot-mark{width:58px;height:58px;margin:auto;border-radius:18px;display:grid;place-items:center;background:#173862;color:#eef5fb;font-weight:900;font-size:20px;box-shadow:0 14px 34px rgba(23,56,98,.18)}
+.boot-screen strong{font-size:19px;letter-spacing:.02em}
+.boot-screen span{font-size:10px;color:#708197}
