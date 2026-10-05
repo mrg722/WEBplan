@@ -1,5 +1,5 @@
 export const EMPTY_DATA = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   meta: { updatedAt: new Date().toISOString() },
   tasks: [],
   nonNegotiables: [],
@@ -13,7 +13,8 @@ export const EMPTY_DATA = {
     waterGoal: 2,
     studyGoalMinutes: 120,
     sleepGoalMinutes: 480,
-    stepsGoal: 10000
+    stepsGoal: 10000,
+    reasonWhy: ""
   },
   notifications: {
     enabled: false,
