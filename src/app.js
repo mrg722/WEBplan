@@ -378,9 +378,9 @@ document.addEventListener("click",e=>{
   if(a==="month-nav"){const d=parse(state.month);d.setMonth(d.getMonth()+Number(el.dataset.delta));state.month=key(new Date(d.getFullYear(),d.getMonth(),1));render();return}
   if(a==="go-date"){state.date=el.dataset.date;state.month=key(parse(state.date));state.page="plan";state.view="day";render();return}
   if(a==="mood"){setDay({mood:el.dataset.mood});return}
-  if(a==="mood-date"){const k=el.dataset.date||state.date;setData(d=>{ensureDay(d,k).mood=el.dataset.mood;return d});return}
+  if(a==="mood-date"){const k=el.dataset.date||state.date;setData(d=>{ensureDay(d,k).mood=el.dataset.mood;ensureWeek(d,weekKey(k)).plannedDays[k]=true;return d});return}
   if(a==="plan-day-toggle"){setPlannedDay(el.dataset.date,!dayHasPlan(el.dataset.date));return}
-  if(a==="task-assign"){const t=data.tasks.find(x=>x.id===el.dataset.id);if(!t)return;const day=el.dataset.day,assigning=t.date!==day;setData(d=>({...d,tasks:d.tasks.map(x=>x.id===t.id?{...x,date:assigning?day:""}:x)}));if(assigning)setPlannedDay(day,true);return}
+  if(a==="task-assign"){const t=data.tasks.find(x=>x.id===el.dataset.id);if(!t)return;const day=el.dataset.day,assigning=t.date!==day;setData(d=>{const out={...d,tasks:d.tasks.map(x=>x.id===t.id?{...x,date:assigning?day:""}:x)};if(assigning)ensureWeek(out,weekKey(day)).plannedDays[day]=true;return out});return}
   if(a==="nonneg-toggle-date"){const n=data.nonNegotiables.find(x=>x.id===el.dataset.id);if(n)toggleNonnegForDate(n,el.dataset.date);return}
   if(a==="nav-goals"){state.page="goals";state.mobileMenu=false;render();return}
   if(a==="task-toggle"){setData(d=>({...d,tasks:d.tasks.map(t=>t.id===el.dataset.id?{...t,completed:!t.completed}:t)}));return}
