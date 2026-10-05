@@ -221,7 +221,7 @@ function appShell() {
           '<button class="nav-item ' + (state.page === p ? "active" : "") + '" data-action="nav" data-page="' + p + '">' + svg(i) + "<span>" + l + "</span></button>"
         ).join("") +
       "</nav>" +
-      '<div class="sidebar-bottom"><button class="sidebar-notify" data-action="notification-settings">' + svg("bell") + "<span>Notificaciones</span><em>" + (data.notifications.enabled ? "ON" : "OFF") + "</em></button><div class="sidebar-quote">“Disciplina hoy,<br>mejor mañana.”</div></div>" +
+      '<div class="sidebar-bottom"><button class="sidebar-notify" data-action="notification-settings">' + svg("bell") + '<span>Notificaciones</span><em>' + (data.notifications.enabled ? "ON" : "OFF") + '</em></button><div class="sidebar-quote">“Disciplina hoy,<br>mejor mañana.”</div></div>' +
     "</aside>" +
     (state.mobileMenu ? '<div class="mobile-scrim" data-action="mobile-menu"></div>' : "") +
     '<main class="main-shell">' +
