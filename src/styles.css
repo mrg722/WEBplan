@@ -346,7 +346,7 @@ body{overflow-x:hidden;padding-bottom:0}
 .sidebar,.mobile-menu,.segmented{display:none !important}
 .main-shell{width:100%;min-width:0;max-width:none}
 .topbar{
-  width:100%;height:70px;grid-template-columns:minmax(0,1fr) auto;
+  width:100%;height:70px;grid-template-columns:auto minmax(0,1fr) auto;
   gap:14px;padding:0 24px;position:sticky;top:0;z-index:20
 }
 .top-brand{display:flex;align-items:center;gap:10px;min-width:0}
