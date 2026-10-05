@@ -187,6 +187,9 @@ function dataIcon(value,size=22){
   return illustratedIcon(name,size);
 }
 function decorateIcons(){
+  document.querySelectorAll(".brand-leaf").forEach(e=>e.innerHTML=illustratedIcon("weekly",28));
+  document.querySelectorAll(".support-note").forEach(e=>{if(e.textContent.includes("♡")){const copy=e.innerHTML.replace("♡ ","");e.innerHTML=illustratedIcon("heart",15)+'<span>'+copy+"</span>";}});
+
   document.querySelectorAll(".task-check,.tiny-check,.habit-check").forEach(b=>{
     const checked=b.classList.contains("checked");
     b.innerHTML=illustratedIcon(checked?"check":"check-empty",13);
