@@ -86,7 +86,7 @@ function goalProgress(g) {
   const ps = data.priorities.filter(p => (g.priorityIds || []).includes(p.id));
   if (ps.length) pieces.push(avg(ps.map(priorityProgress)));
   const hs = data.habits.filter(h => (g.habitIds || []).includes(h.id));
-  if (hs.length) pieces.push(avg(hs.map(h => habitDayPct(h, week(currentDate()))));
+  if (hs.length) pieces.push(avg(hs.map(h => habitDayPct(h, week(currentDate())))));
   return pieces.length ? Math.round(avg(pieces)) : clamp(g.progress || 0);
 }
 function dayTaskPct(dateKey) {
