@@ -1,0 +1,26 @@
+name: PLAN 2.0 quality
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check src/app.js
+          node --check src/data.js
+          node --check src/store.js
+          node --check src/utils.js
+          node --check sw.js
+      - name: Validate manifest
+        run: node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8')); if(!m.name||!m.start_url||!m.display) process.exit(1); const sizes=(m.icons||[]).map(x=>x.sizes); if(!sizes.flatMap(x=>String(x).split(' ')).includes('192x192')||!sizes.flatMap(x=>String(x).split(' ')).includes('512x512')) process.exit(2); console.log('manifest ok')"
+      - name: Check server Python
+        run: python3 -m py_compile server.py
