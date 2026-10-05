@@ -63,3 +63,15 @@ No existe backend remoto en el repositorio:
 
 - El entorno no incluye `python` como comando, por lo que la validación usa `py -m py_compile` cuando está disponible.
 - El snapshot descargado no trae credenciales Git configuradas para `push`; el commit local queda preparado, pero el envío a GitHub requiere una sesión/token de GitHub disponible en el entorno.
+
+
+## Corrección de iconografía e interacciones — 2026-10-05
+
+- Se consolidó la iconografía de interfaz en ilustraciones SVG internas para evitar la mezcla entre atlas raster, SVG anteriores y caracteres Unicode como iconos.
+- Se corrigió el caso visual de «¿Qué hago ahora?» para que use un icono real de éxito/check y no una coordenada incorrecta del atlas.
+- Los checks de tareas, hábitos, no negociables y planificación diaria ahora se representan con estados gráficos marcado/no marcado.
+- Se restauraron en la vista Día las secciones COSAS POR HACER y PLAN MÍNIMO · DÍAS DIFÍCILES.
+- Los selectores de icono de metas y no negociables dejaron de aceptar texto libre y usan tokens controlados, conservando compatibilidad con valores históricos.
+- Las acciones de editar, eliminar, mover, cerrar, atrás/adelante, menú, agregar y guardar recibieron iconografía ilustrada y ajustes responsive.
+- Se corrigió el desbordamiento del CTA «Marcar completada» en el bloque AHORA en móvil.
+- La suite de calidad de GitHub Actions pasó correctamente en el commit final de esta iteración.
