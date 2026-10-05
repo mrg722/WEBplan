@@ -125,10 +125,11 @@ function dayCompletion(dateKey = state.date) {
   return Math.round(parts.reduce((s, p) => s + p[0] * p[1], 0) / weights);
 }
 function weekCompletion(date = currentDate()) {
-  const vals = week(date).map(d => {
-    const k = key(d);
-    return dayCompletion(k);
-  }).filter((v, i) => tasksFor(week(date)[i]).length || dayNonnegPct(key(week(date)[i])) > 0 || dayHabitPct(key(week(date)[i])) > 0 || data.days[key(week(date)[i]]);
+  const days = week(date);
+  const vals = days.map(d => dayCompletion(key(d))).filter((v, i) => {
+    const k = key(days[i]);
+    return tasksFor(k).length > 0 || dayNonnegPct(k) > 0 || dayHabitPct(k) > 0 || Boolean(data.days[k]);
+  });
   return vals.length ? Math.round(avg(vals)) : 0;
 }
 function habitWeekPct(w) {
