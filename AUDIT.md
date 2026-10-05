@@ -1,78 +1,66 @@
-# Auditoría final — PLAN 2.0
+# AUDITORÍA — PLAN 2.0 v2
 
-## Alcance revisado
+## Estado después de la corrección
 
-Se contrastó la especificación completa del planner con la implementación y con la referencia visual adjunta. El resultado no replica la hoja como una página digital: la transforma en una herramienta compacta, interactiva y responsive.
+| Área | Estado | Resultado |
+|---|---|---|
+| Diseño visual | 🟢 | Se mantiene el estilo pastel/limpio y se corrige el bug de SVG que convertía los iconos laterales en bloques negros. |
+| Vista Día | 🟢 | Arranca en la fecha local actual, permite planificar desde cero y conserva los bloques pedidos. |
+| Vista Semana | 🟢 | 7 días clicables, cumplimiento, tareas, hábitos, entrenamientos, estudio, sueño y balance. |
+| Vista Mes | 🟢 | Calendario con cumplimiento, tareas, hábitos y entrenamiento; entra a cualquier día. |
+| Tareas | 🟢 | CRUD, fecha/hora, prioridad, duración, notas, mover mañana y bandeja sin fecha separada. |
+| Hábitos | 🟢 | CRUD, objetivo, frecuencia, días activos, matriz semanal y porcentaje de consistencia. |
+| No negociables | 🟢 | CRUD, días activos, modo manual/métrica y cálculo por día. |
+| Prioridades | 🟢 | Máximo 3 por semana y relación real con tareas; progreso automático cuando existen tareas asociadas. |
+| Entrenamiento | 🟢 | Fecha, hora, duración, tipo, completado, percepción y notas. |
+| Estudio / sueño / agua | 🟢 | Registro manual, objetivos y acumulación semanal. |
+| Metas | 🟢 | Progreso derivado desde prioridades/tareas/hábitos y relaciones editables. |
+| Progreso | 🟢 | La ventana de 4 semanas usa la semana seleccionada, no una fecha fija del sistema. |
+| Insights | 🟢 | Basados en cumplimiento real y redactados como observaciones descriptivas. |
+| Persistencia | 🟢 | localStorage v2, sin cargar la demo antigua. |
+| PWA | 🟢 | Manifest, iconos, service worker, caché offline e instalación. |
+| Notificaciones | 🟡 | Notificación local y service worker listos; push remoto requiere backend/VAPID. |
+| Sincronización | 🟡 | Multitab + import/export + endpoint REST configurable. Sync entre dispositivos requiere conectar un backend. |
+| Android 8 | 🟡 | Compatibilidad legacy por limitaciones del navegador antiguo; soporte principal recomendado Android 10+. |
 
-## Cobertura funcional
+## Correcciones específicas realizadas
 
-| Requisito | Estado | Evidencia en la implementación |
-|---|---:|---|
-| Plan principal Día / Semana / Mes | ✅ | Selector superior + vistas independientes |
-| Navegación de fecha | ✅ | Anterior, siguiente y Hoy |
-| Nueva tarea | ✅ | Modal reutilizable |
-| Agenda | ✅ | Completar, editar, eliminar, mover, hora, prioridad, nota y duración |
-| “Cosas por hacer” | ✅ | Bandeja sin fecha, edición, movimiento a mañana y eliminación |
-| Antigüedad de pendientes | ✅ | Muestra “Pendiente desde hace X días” cuando existe `createdAt` |
-| Estado emocional | ✅ | 5 botones seleccionables y persistentes |
-| Energía opcional | ✅ | Slider 1–10 |
-| No negociables | ✅ | CRUD, objetivo, frecuencia, días activos y activo/inactivo |
-| Prioridades máximas 3 | ✅ | El alta se bloquea al alcanzar 3 |
-| Hábitos adicionales | ✅ | Crear, editar, borrar y matriz L-M-X-J-V-S-D |
-| Consistencia semanal | ✅ | Porcentaje semanal por hábito y global |
-| Entrenamiento | ✅ | Fecha, hora, duración, estado, tipo y nota |
-| Estudio | ✅ | Minutos diarios + objetivo + acumulación semanal |
-| Sueño | ✅ | Minutos diarios + objetivo + promedio semanal |
-| Agua | ✅ | Litros diarios + objetivo + barra |
-| Balance diario | ✅ | Lo logré / mejorar / notas |
-| Vista Semana | ✅ | 7 días clicables + tareas/hábitos/entrenamiento/estudio/sueño |
-| Resumen semanal | ✅ | Tareas, hábitos, entrenos, estudio, sueño |
-| Balance semanal | ✅ | 3 campos, incluido mayor logro |
-| Vista Mes | ✅ | Calendario + indicadores + resumen mensual |
-| Metas largo plazo | ✅ | CRUD + progreso + relaciones a prioridades/tareas/hábitos |
-| Cadena Meta → objetivo → tarea → completado | ✅ | Modelo + panel explicativo |
-| ¿Qué hago ahora? | ✅ | Regla determinista basada en pendientes y horario |
-| Plan mínimo | ✅ | 4 esenciales diarios |
-| Progreso histórico | ✅ | Tendencias simples para agua, entrenamiento, estudio, sueño, pasos, peso y sensación general |
-| Insights | ✅ | Observaciones descriptivas y no causales |
-| Persistencia | ✅ | `localStorage` detrás de `src/store.js` |
-| Responsive | ✅ | Escritorio, tablet y móvil; sin layout horizontal intencional |
-| No sobrecargar | ✅ | Sin IA pesada, sin gamificación infantil, sin módulos ajenos al objetivo |
+### 1. Sidebar
+El SVG no tenía `fill:none` / `stroke:currentColor`. Los paths se rellenaban con el valor por defecto del SVG y aparecían como cuadrados/círculos negros. Se añadió un sistema común de iconos SVG.
 
-## Decisiones de diseño
+### 2. Botones “Nueva tarea”
+La acción estaba posicionada encima del resumen del acordeón. Se reservó espacio real en la cabecera y se ajustó la posición en desktop y móvil.
 
-La referencia usa una composición de panel con navegación lateral, tarjetas claras, radios/checks, barras de progreso y colores suaves. La implementación conserva esas señales y las moderniza con:
+### 3. Datos iniciales
+La aplicación ya no arranca con la demo del planner. La clave de almacenamiento cambió a `plan20-data-v2`, por lo que la demo anterior no se reutiliza.
 
-- tarjetas/acordeones reutilizables;
-- jerarquía visual Día → acción actual → ejecución → revisión;
-- paneles laterales que se convierten en columna móvil;
-- modales para acciones que no deben ocupar espacio permanente;
-- indicadores compactos en lugar de gráficos decorativos.
+### 4. Fecha local
+Se eliminó el uso de `toISOString().slice(0,10)` para las claves de día. Las fechas se generan en calendario local, evitando saltos de fecha por UTC.
 
-## “¿Qué hago ahora?”
+### 5. Tareas sin fecha
+Una tarea puede permanecer realmente en “Cosas por hacer”. El editor tiene la opción explícita “Guardar sin fecha”.
 
-Se evita una IA opaca. El motor selecciona una tarea pendiente del día por horario y, como respaldo, una tarea pendiente sin fecha. La regla está visible y es reproducible.
+### 6. ¿Qué hago ahora?
+Ahora considera prioridad, vencimiento, proximidad horaria y duración antes de elegir la siguiente acción.
 
-## Persistencia y futura base de datos
+### 7. Relaciones
+Prioridades y metas pueden relacionarse a tareas. El progreso de una prioridad o meta se recalcula desde sus relaciones cuando estas existen.
 
-La UI no depende directamente del mecanismo de almacenamiento. `src/store.js` sirve de frontera. Esto permite reemplazar `load/save` por una API autenticada más adelante sin rehacer las vistas.
+### 8. Progreso
+Ya no está atado siempre a `new Date()`; usa la semana actualmente seleccionada.
 
-## Validaciones realizadas
+### 9. Insights
+Se quitó la puntuación arbitraria basada en agua/estudio/mood. Las observaciones usan `dayCompletion()` y muestran explícitamente el carácter descriptivo.
 
-- `node --check src/app.js` ✅
-- `node --check src/data.js` ✅
-- `python -m py_compile server.py` ✅
-- servidor HTTP local levantado y `GET /` respondió `200 OK` ✅
-- revisión de rutas de assets y estructura de carpetas ✅
+### 10. PWA
+Se añadió manifest, iconos y service worker con cache offline, `push` y `notificationclick`.
 
-No se incorporaron dependencias npm externas. Esto evita depender de una instalación de red para abrir la demo y facilita moverla a otro equipo.
+### 11. Notificaciones
+Se añadió permiso explícito, notificación de prueba y recordatorios de tareas cercanas/vencidas mediante el service worker.
 
-## Limitaciones honestas de esta entrega
+### 12. Sincronización
+Se añadió sincronización multitab y una interfaz para endpoint REST remoto, además de backup/import.
 
-1. Es una SPA de primera versión con persistencia local; no existe cuenta de usuario ni sincronización entre dispositivos.
-2. La cadena Meta → Prioridad → Tarea → Completado está modelada y visible, pero todavía no recalcula automáticamente todas las relaciones como un backend relacional.
-3. Los “insights” son descriptivos; no son un sistema estadístico avanzado.
-4. No hay notificaciones push, recordatorios en segundo plano ni calendario externo.
-5. No se intenta convertir los registros en diagnósticos médicos o psicológicos.
+## Límites honestos
 
-Estas limitaciones son deliberadas para mantener el producto útil y no sobrecomplicarlo.
+No existe un backend remoto dentro de GitHub Pages. Por eso el producto no puede inventar una sincronización entre teléfonos ni enviar Web Push desde un servidor inexistente. El frontend queda preparado para conectarlo sin rehacer la UI.
