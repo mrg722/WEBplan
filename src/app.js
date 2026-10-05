@@ -724,7 +724,7 @@ async function checkLocalReminders() {
 }
 async function maybeNotify(logKey,title,body,taskId) {
   if(notifyLog[logKey]) return;
-  if(document.visibilityState==="hidden" || logKey.startsWith("overdue-")) {
+  if(document.visibilityState==="hidden" || logKey.startsWith("overdue-") || logKey.startsWith("due-")) {
     try { const reg=await navigator.serviceWorker.ready; await reg.showNotification(title,{body,icon:"./public/icons/icon-192.png",badge:"./public/icons/icon-192.png",tag:logKey,renotify:false,data:{url:"./?date="+state.date+(taskId?"&task="+encodeURIComponent(taskId):"")}}); markNotified(logKey); }
     catch {}
   }
