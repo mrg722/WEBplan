@@ -1,4 +1,4 @@
-const CACHE = "plan20-v2";
+const CACHE = "plan20-v3";
 const SHELL = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const SHELL = [
   "./src/store.js",
   "./src/utils.js",
   "./src/styles.css",
+  "./src/notifications.js",
   "./public/icons/icon.svg",
   "./public/icons/icon-192.svg",
   "./public/icons/icon-512.svg"
@@ -49,8 +50,8 @@ self.addEventListener("message", event => {
     const p=event.data.payload||{};
     event.waitUntil(self.registration.showNotification(p.title||"PLAN 2.0",{
       body:p.body||"",
-      icon:"./public/icons/icon-192.png",
-      badge:"./public/icons/icon-192.png",
+      icon:"./public/icons/icon-192.svg",
+      badge:"./public/icons/icon-192.svg",
       tag:p.tag||"plan20",
       renotify:false,
       data:{url:p.url||"./"}
@@ -63,8 +64,8 @@ self.addEventListener("push", event => {
   try { payload=event.data ? event.data.json() : {}; } catch { payload={body:event.data?.text()||""}; }
   event.waitUntil(self.registration.showNotification(payload.title||"PLAN 2.0",{
     body:payload.body||"Tienes algo pendiente.",
-    icon:"./public/icons/icon-192.png",
-    badge:"./public/icons/icon-192.png",
+    icon:"./public/icons/icon-192.svg",
+    badge:"./public/icons/icon-192.svg",
     tag:payload.tag||"plan20-push",
     renotify:true,
     data:{url:payload.url||"./"}
