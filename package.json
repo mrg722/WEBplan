@@ -1,11 +1,11 @@
 {
-  "name": "plan-2-0",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "description": "PLAN 2.0 — planner personal responsive sin dependencias externas",
-  "scripts": {
-    "start": "python server.py",
-    "dev": "python server.py"
+  "name":"plan-2-0",
+  "version":"2.0.0",
+  "private":true,
+  "type":"module",
+  "description":"PLAN 2.0 — planner personal PWA sin dependencias de runtime",
+  "scripts":{
+    "start":"python server.py",
+    "dev":"python server.py"
   }
 }
