@@ -78,4 +78,7 @@ Sin endpoint, PLAN 2.0 funciona completamente de forma local.
 
 The mobile surface mounts a fixed bottom navigation while desktop keeps its sidebar. The planner grid uses `week(currentDate())` and each task is stored with its concrete `date`; multi-day creation clones tasks instead of sharing references. Weekly aggregates continue to resolve through `weekKey(date)` and `weekly[weekKey]`.
 
-The supplied `public/icons/habits-atlas.png` is the visual source for the atlas sprite classes in `styles.css`. Existing persistence, synchronization, PWA registration and notification flows remain in place.
+
+## Iconografía — 2026-10-05
+
+La interfaz visible usa un sistema único de ilustraciones SVG internas generado por `illustratedIcon()`. `atlasIcon()` se mantiene como compatibilidad de API interna y delega en el mismo sistema; el atlas raster histórico puede permanecer en caché sin ser la fuente visual de los controles. Los estados de check, navegación, edición, eliminación, acciones y secciones se renderizan como ilustraciones y no como caracteres Unicode.
