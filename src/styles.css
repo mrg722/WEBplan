@@ -500,6 +500,8 @@ body{overflow-x:hidden;padding-bottom:0}
 @media(max-width:360px){
   .planner-week-grid{grid-template-columns:1fr}.planner-day-card{min-height:auto}.plan-subnav button{padding-left:5px;padding-right:5px}.plan-subnav button span{max-width:68px}.bottom-nav-item{font-size:6px}.bottom-nav-icon{height:24px}
 }
+
+.planner-picker-tools{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:10px;margin:14px 0}.planner-picker-tools input,.planner-picker-tools select{min-height:42px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px;color:var(--ink);font:inherit}.period-tabs{display:flex;gap:6px;padding:5px;background:var(--blue-soft);border:1px solid var(--line);border-radius:14px;width:max-content;max-width:100%;margin:0 0 18px}.period-tabs button{border:0;background:transparent;border-radius:10px;padding:10px 18px;color:var(--muted);font:700 13px inherit;cursor:pointer}.period-tabs button.active{background:var(--primary-teal);color:#fff;box-shadow:0 5px 14px #1187ff2b}.note-history-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}@media(max-width:520px){.planner-picker-tools{grid-template-columns:1fr}.period-tabs{width:100%}.period-tabs button{flex:1;padding-inline:10px}}
 @media(max-width:320px){
   .content-wrap{padding-left:4px;padding-right:4px}.topbar{padding-left:6px;padding-right:6px}.bottom-nav{height:56px;bottom:5px}.bottom-nav-item{padding-left:1px;padding-right:1px}.planner-block{padding:8px}
 }
