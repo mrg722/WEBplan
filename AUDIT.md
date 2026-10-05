@@ -39,3 +39,14 @@ No existe backend remoto en el repositorio:
 - Web Push cerrado necesita backend/VAPID.
 - Sync entre dispositivos necesita endpoint REST.
 - La validación visual final en un teléfono físico depende de abrir la PWA en ese dispositivo; el código y workflows del repositorio sí fueron verificados.
+
+
+## Actualización responsive — 5 Oct 2026
+
+- Se eliminó la dependencia visible de la barra lateral y del menú hamburguesa para la navegación principal.
+- La navegación principal ahora se monta como barra inferior compacta: Plan, Metas, Progreso, Insights y Configura.
+- En Plan existe una subbarra compacta con Planificar semana, Día, Semana y Mes.
+- El plan semanal mantiene el scroll horizontal solamente dentro del planificador; se fuerza `overflow-x:hidden` en el documento para evitar una segunda barra horizontal de toda la página.
+- Se añadió un editor de día dentro de Planificar semana para añadir, editar, completar o eliminar tareas del día seleccionado.
+- Cada bloque principal del planificador tiene control Compactar/Expandir.
+- Los estados emocionales del planificador dejaron de usar emojis y se renderizan como ilustraciones SVG coloreadas.
