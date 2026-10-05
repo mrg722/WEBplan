@@ -503,3 +503,23 @@ body{overflow-x:hidden;padding-bottom:0}
 @media(max-width:320px){
   .content-wrap{padding-left:4px;padding-right:4px}.topbar{padding-left:6px;padding-right:6px}.bottom-nav{height:56px;bottom:5px}.bottom-nav-item{padding-left:1px;padding-right:1px}.planner-block{padding:8px}
 }
+
+/* Final mobile composition pass */
+.section-icon{display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border-radius:9px;background:#e9fbfa;overflow:hidden}
+.section-icon .atlas-icon{background-color:transparent;border-radius:0}
+.day-view-shell{display:grid;gap:12px}
+.day-date-nav{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:8px 10px;border:1px solid #dfe9ef;border-radius:14px;background:rgba(255,255,255,.85)}
+.day-date-nav>div{min-width:0}.day-date-nav strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#173862}
+.day-save-row{display:flex;justify-content:flex-end;gap:8px;padding:2px 0 8px}.day-save-row .primary-btn{min-width:150px}
+.note-helper{margin:0;color:#7b8999;font-size:10px}.daily-note-preview{margin-top:8px;padding:10px;border-radius:10px;background:#f7fbfd;color:#29415f;font-size:11px}
+.notes-history-panel{padding:14px}.notes-history-panel .panel-heading{margin-bottom:10px}.notes-history-list{display:grid;gap:8px}.note-history-item{border:1px solid #e0e9ef;border-radius:12px;overflow:hidden;background:#fff}.note-history-head{width:100%;display:flex;justify-content:space-between;gap:10px;text-align:left;border:0;background:#fff;padding:11px 12px;color:#173862}.note-history-head span:first-child{min-width:0;display:grid;gap:3px}.note-history-head small{color:#7b8999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.note-history-body{padding:0 12px 12px;color:#4f6379;font-size:11px;line-height:1.5}.note-history-body p{white-space:pre-wrap}
+.atlas-icon{object-fit:contain}
+@media (max-width:760px){
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .content-wrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  .planner-scroll{overflow:visible!important}.planner-week-grid{width:100%!important;min-width:0!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}
+  .planner-day-card{min-width:0!important;min-height:0!important;padding:10px;overflow:hidden}.planner-day-head{gap:6px}.planner-day-actions{flex-direction:column;align-items:stretch}.planner-day-actions button{width:100%}.planner-moods{gap:4px;justify-content:flex-start}.planner-mood{min-width:28px!important;padding:2px!important}.planner-mood svg{width:24px!important;height:24px!important}.planner-task-copy strong{font-size:10px}.planner-task-copy small{font-size:8px}.planner-add{font-size:9px}
+  .planning-columns{grid-template-columns:1fr!important}.day-date-nav{grid-template-columns:34px minmax(0,1fr) 34px auto}.day-date-nav .today-btn{padding:0 8px}.day-save-row{position:sticky;bottom:calc(68px + env(safe-area-inset-bottom));z-index:30;padding:8px;background:rgba(238,245,251,.92);backdrop-filter:blur(12px);border-radius:12px}.day-save-row .primary-btn{flex:1}.day-save-row .outline-btn{white-space:nowrap}.bottom-nav{bottom:env(safe-area-inset-bottom);height:64px;padding:5px}
+  .week-day-grid{grid-template-columns:1fr!important;gap:8px}.day-summary-card{min-height:0;display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:3px 9px;align-items:center;padding:11px}.day-summary-card .day-name{grid-column:1}.day-summary-card .day-num{grid-column:1;grid-row:2}.day-summary-card .day-task-count,.day-summary-card .day-score{grid-column:2}.day-summary-card .day-dots{grid-column:2}.day-summary-card .day-mood{grid-column:3;grid-row:1 / span 2}.day-summary-card .day-mood svg{width:34px;height:34px}.insight-card{grid-template-columns:36px minmax(0,1fr);padding:11px}.insight-card p{font-size:10px}
+}
+@media (max-width:360px){.planner-week-grid{grid-template-columns:1fr!important}.day-date-nav{grid-template-columns:32px minmax(0,1fr) 32px}.day-date-nav .today-btn{grid-column:1 / -1;justify-self:stretch}.day-save-row{bottom:calc(64px + env(safe-area-inset-bottom))}.day-save-row .outline-btn{display:none}.bottom-nav{height:58px}.bottom-nav-icon{height:24px}}

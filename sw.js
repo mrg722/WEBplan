@@ -1,4 +1,4 @@
-const CACHE = "plan20-v3";
+const CACHE = "plan20-v4";
 const SHELL = [
   "./",
   "./index.html",
