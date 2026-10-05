@@ -4,9 +4,18 @@ export const MOODS = [
   ["Excelente", "😄"],
   ["Bien", "🙂"],
   ["Normal", "😐"],
-  ["Bajo", "😓"],
+  ["Enojado", "😠"],
   ["Agotado", "😴"]
 ];
+export const LEGACY_MOODS = [["Bajo", "😓"]];
+export const MOOD_SCORES = {
+  Excelente: 5,
+  Bien: 4,
+  Normal: 3,
+  Enojado: 2,
+  Agotado: 1,
+  Bajo: 2
+};
 
 export function key(d) {
   const x = new Date(d);
@@ -42,6 +51,10 @@ export function startWeek(d) {
 export function week(d) {
   const s = startWeek(d);
   return Array.from({ length: 7 }, (_, i) => add(s, i));
+}
+
+export function weekKey(d) {
+  return key(startWeek(typeof d === "string" ? parse(d) : d));
 }
 
 export function monthGrid(d) {
@@ -122,9 +135,14 @@ export function timeEnd(time, minutes) {
 export function minutesFromTime(time) {
   if (!time) return null;
   const [h, m] = String(time).split(":").map(Number);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
   return (h * 60) + m;
 }
 
 export function localMinutes(date = new Date()) {
   return date.getHours() * 60 + date.getMinutes();
+}
+
+export function moodScore(mood) {
+  return MOOD_SCORES[mood] || 0;
 }
