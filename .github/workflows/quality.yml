@@ -21,6 +21,7 @@ jobs:
           node --check src/utils.js
           node --check sw.js
       - name: Validate manifest
-        run: node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8')); if(!m.name||!m.start_url||!m.display) process.exit(1); const sizes=(m.icons||[]).map(x=>x.sizes); if(!sizes.flatMap(x=>String(x).split(' ')).includes('192x192')||!sizes.flatMap(x=>String(x).split(' ')).includes('512x512')) process.exit(2); console.log('manifest ok')"
+        run: |
+          node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8')); if(!m.name||!m.start_url||!m.display) process.exit(1); const sizes=(m.icons||[]).map(x=>x.sizes||'').join(' '); if(!sizes.includes('192x192')||!sizes.includes('512x512')) process.exit(2); for(const x of m.icons){if(!fs.existsSync(x.src.replace(/^\.\//,''))) process.exit(3)} console.log('manifest ok')"
       - name: Check server Python
         run: python3 -m py_compile server.py
