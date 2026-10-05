@@ -331,3 +331,152 @@ h1,h2,h3,p { margin:0; }
   .planner-picker-head small{display:none}
   .planner-task-picker-grid{grid-auto-columns:100px}
 }
+
+
+/* PLAN 2.0 — responsive/mobile navigation repair */
+:root{
+  --blue:#28c9c3;
+  --blue-soft:#e9fbfa;
+  --primary-teal:#28c9c3;
+  --primary-teal-dark:#149c99;
+}
+html,body,#root{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
+body{overflow-x:hidden;padding-bottom:0}
+.app-shell{width:100%;min-width:0;max-width:none;display:block}
+.sidebar,.mobile-menu,.segmented{display:none !important}
+.main-shell{width:100%;min-width:0;max-width:none}
+.topbar{
+  width:100%;height:70px;grid-template-columns:minmax(0,1fr) auto;
+  gap:14px;padding:0 24px;position:sticky;top:0;z-index:20
+}
+.top-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.top-brand-mark{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#e8fbfa;border:1px solid #c8efed}
+.top-brand strong{display:block;font-size:15px;letter-spacing:.03em;color:#173862}
+.top-brand small{display:block;color:#7b8799;font-size:8px;margin-top:2px}
+.top-date{justify-self:start;min-width:0}
+.top-date>div{min-width:260px}
+.top-date strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-date small{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-actions{justify-self:end}
+.today-btn,.icon-btn,.ghost-btn,.outline-btn,.primary-btn{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.primary-btn{background:var(--primary-teal);box-shadow:0 9px 20px rgba(40,201,195,.22)}
+.primary-btn:hover{background:#21bbb6}
+.outline-btn:hover,.ghost-btn:hover{border-color:#9bdedb}
+.content-wrap{
+  width:100%;min-width:0;max-width:1600px;margin:0 auto;
+  padding:16px 22px 104px;
+}
+.plan-subnav{
+  display:flex;align-items:center;gap:5px;width:max-content;max-width:100%;
+  margin:0 0 12px;padding:4px;border:1px solid #dfe9ef;border-radius:12px;background:rgba(255,255,255,.78);
+  box-shadow:0 5px 16px rgba(64,92,120,.05);overflow-x:auto
+}
+.plan-subnav button{
+  display:flex;align-items:center;gap:6px;border:0;background:transparent;color:#5f7186;
+  border-radius:9px;padding:6px 10px;font-size:9px;font-weight:800;white-space:nowrap
+}
+.plan-subnav button.active{background:var(--primary-teal);color:white;box-shadow:0 6px 14px rgba(40,201,195,.18)}
+.plan-subnav svg{display:block;flex:0 0 auto}
+.planner-page .page-heading{margin-bottom:9px}
+.planner-page .page-heading .primary-btn{display:inline-flex;align-items:center;gap:6px}
+.planner-page .page-heading .primary-btn svg{display:block}
+.planning-week-meta{width:100%;min-width:0}
+.planner-scroll{width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden}
+.planner-week-grid{width:max-content;min-width:100%;grid-template-columns:repeat(7,minmax(170px,1fr))}
+.planning-columns{width:100%;min-width:0}
+.planning-col{min-width:0}
+.planner-block{min-width:0;overflow:hidden}
+.planner-block-head{min-width:0}
+.planner-block-title{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.planner-block-title>div:last-child{min-width:0}
+.planner-block-icon{width:30px;height:30px;display:grid;place-items:center;flex:0 0 30px;border-radius:9px;background:#ecfbfa}
+.planner-block-icon svg{display:block}
+.planner-block-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.compact-toggle{
+  border:1px solid #cfe7e6;background:#f6fdfc;color:#229b96;border-radius:8px;
+  padding:5px 7px;font-size:8px;font-weight:900;white-space:nowrap
+}
+.compact-toggle:hover{background:#e7f9f7}
+.planner-block.is-closed{padding-bottom:4px}
+.planner-block.is-closed .planner-block-head{margin-bottom:0}
+.planner-block-body{min-width:0}
+.planning-day-editor{margin-top:0}
+.planning-day-editor .planner-block-head{margin-bottom:0}
+.planner-editor-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.planner-editor-toolbar strong{font-size:10px;color:#40546b}
+.planner-editor-tasks{display:grid;gap:0}
+.planner-editor-tasks .planner-task-row{padding:8px 3px}
+.planner-day-actions{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.day-open-btn{
+  border:1px solid #d6e5ef;background:#fff;color:#4f647d;border-radius:8px;padding:5px 6px;font-size:8px;font-weight:800;white-space:nowrap
+}
+.day-open-btn:hover{border-color:#9bdedb;color:#188f8b}
+.planner-mood span{display:grid;place-items:center}
+.planner-mood svg{display:block}
+.bottom-nav{
+  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+  width:min(620px,calc(100% - 24px));height:66px;z-index:80;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:6px;
+  background:rgba(255,255,255,.93);border:1px solid #dfe8ef;border-radius:18px;
+  box-shadow:0 18px 45px rgba(48,78,107,.17);backdrop-filter:blur(16px)
+}
+.bottom-nav-item{
+  min-width:0;border:0;background:transparent;color:#718197;border-radius:13px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:5px 3px;font-size:8px;font-weight:900
+}
+.bottom-nav-item:hover{background:#f2fbfa;color:#1aa39f}
+.bottom-nav-item.active{background:var(--primary-teal);color:white;box-shadow:0 8px 18px rgba(40,201,195,.2)}
+.bottom-nav-icon{height:30px;display:grid;place-items:center}
+.bottom-nav-icon svg{display:block;filter:drop-shadow(0 2px 2px rgba(23,56,98,.08))}
+.bottom-nav-item.active .bottom-nav-icon svg{filter:brightness(0) invert(1) drop-shadow(0 2px 3px rgba(0,0,0,.1))}
+.bar-blue>span{background:#35c8c4}
+.calendar-day.selected,.day-summary-card.today{border-color:#35c8c4}
+.calendar-day.selected{box-shadow:0 0 0 2px rgba(53,200,196,.12)}
+.calendar-day.selected .calendar-score,.day-score{color:#23aaa5}
+.week-summary-grid{min-width:0}
+.week-day-grid{min-width:0}
+.week-day-grid>*{min-width:0}
+.top-date button:hover,.icon-btn:hover,.today-btn:hover{border-color:#9bdedb}
+@media(max-width:1120px){
+  .content-wrap{padding-left:16px;padding-right:16px}
+  .topbar{padding:0 16px}
+  .planning-columns{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  .topbar{height:auto;min-height:66px;padding:8px 10px;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .top-brand{display:none}
+  .top-date{grid-column:1}
+  .top-date>div{min-width:0}
+  .top-date strong{font-size:12px}
+  .top-date small{font-size:8px}
+  .top-actions{grid-column:2}
+  .content-wrap{padding:10px 9px 98px}
+  .plan-subnav{width:100%;margin-bottom:10px}
+  .plan-subnav button{flex:1;justify-content:center;padding:6px 7px;font-size:8px}
+  .planning-page .page-heading{align-items:flex-start}
+  .planning-page .page-heading .primary-btn{padding:8px 9px;font-size:9px}
+  .planning-page .page-heading .primary-btn svg{width:17px;height:17px}
+  .planning-week-meta{font-size:8px}
+  .planner-week-grid{grid-template-columns:repeat(7,minmax(190px,1fr));min-width:100%;gap:7px}
+  .planner-day-card{min-height:245px}
+  .planning-columns{grid-template-columns:1fr}
+  .planner-block{padding:10px}
+  .planner-block-head{gap:6px}
+  .planner-block-title{gap:6px}
+  .planner-block-icon{width:26px;height:26px;flex-basis:26px}
+  .compact-toggle{font-size:7px;padding:4px 5px}
+  .planner-day-actions{flex-direction:column;align-items:flex-end}
+  .planner-editor-toolbar{align-items:flex-start}
+  .planner-editor-toolbar .outline-btn{font-size:8px;padding:5px 6px}
+  .bottom-nav{bottom:8px;height:62px;width:calc(100% - 14px);padding:5px;border-radius:16px}
+  .bottom-nav-item{font-size:7px;border-radius:11px}
+  .bottom-nav-icon{height:28px}
+}
+@media(max-width:430px){
+  .content-wrap{padding-left:7px;padding-right:7px}
+  .plan-subnav button span{max-width:82px;overflow:hidden;text-overflow:ellipsis}
+  .planner-week-grid{grid-template-columns:repeat(7,minmax(178px,1fr))}
+  .bottom-nav{height:60px}
+  .bottom-nav-icon{height:26px}
+}
