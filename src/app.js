@@ -153,12 +153,14 @@ function moodIllustration
 (label,size=32){
   const colors={Excelente:["#39d9d0","#a5f4df"],Bien:["#64b9f7","#b9e6ff"],Normal:["#ffd15d","#fff0ad"],Bajo:["#b78bf2","#e4d6ff"],Agotado:["#ff987d","#ffd1c5"],Enojado:["#ef617b","#ffb0bc"],Motivado:["#ffb04c","#ffe3a8"],Calmado:["#65d9c2","#b7f2df"]};
   const [a,b]=colors[label]||colors.Normal;
-  const mouth=label==="Excelente"?"M12 31q8 9 16 0":label==="Bien"?"M13 31q7 6 14 0":label==="Normal"?"M13 32h14":label==="Enojado"?"M12 36q8-8 16 0":label==="Agotado"?"M12 36q8-6 16 0":"M13 33q7 4 14 0";
+  const mouth=label==="Excelente"?"M13 27q7 9 14 0":label==="Bien"?"M14 28q6 6 12 0":label==="Normal"?"M14 29h12":label==="Enojado"?"M13 33q7-7 14 0":label==="Agotado"?"M13 32q7-5 14 0":"M14 29q6 4 12 0";
   const brow=label==="Enojado"?`<path d="M12 19l7-3M27 16l7 3" stroke="#173862" stroke-width="3.2" stroke-linecap="round"/>`:"";
-  const safe=label.replace(/\W/g,"");
-  return `<svg viewBox="0 0 40 40" width="${size}" height="${size}" aria-hidden="true"><defs><linearGradient id="mood${safe}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><circle cx="20" cy="20" r="16" fill="url(#mood${safe})"/><ellipse cx="15" cy="17" rx="2.4" ry="3" fill="#173862"/><ellipse cx="25" cy="17" rx="2.4" ry="3" fill="#173862"/>${brow}<path d="${mouth}" fill="none" stroke="#173862" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+  const safe=`mood${++moodIllustration.instance}`;
+  return `<svg class="mood-face" viewBox="0 0 40 40" width="${size}" height="${size}" role="img" aria-label="${escape(label)}"><defs><linearGradient id="${safe}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><circle cx="20" cy="20" r="17" fill="url(#${safe})"/><ellipse cx="15" cy="17" rx="2" ry="2.7" fill="#173862"/><ellipse cx="25" cy="17" rx="2" ry="2.7" fill="#173862"/>${brow}<path d="${mouth}" fill="none" stroke="#173862" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 }
-function atlasIcon(name,size=28){ return illustratedIcon(name,size); }
+moodIllustration.instance=0;
+function semanticIcon(name,size=28){ return illustratedIcon(name,size); }
+function atlasIcon(name,size=28){ return semanticIcon(name,size); }
 function iconToken(value,fallback="task"){
   const raw=String(value||"").trim();
   const legacy={"🎯":"target","💧":"water","♥":"heart","❤":"heart","✓":"check","↔":"training","▤":"notes","◔":"sleep","◯":"apple","⚡":"spark","✎":"edit","×":"close","→":"forward","←":"back","‹":"back","›":"next","◢":"weekly"};
@@ -209,9 +211,6 @@ function decorateIcons(){
     b.innerHTML=illustratedIcon(planned?"check":"check-empty",17)+'<span>'+(planned?"Planificado":"Planificar")+'</span>';
   });
   document.querySelectorAll(".planner-belief span").forEach(e=>e.innerHTML=illustratedIcon("heart",16));
-  document.querySelectorAll(".now-main .primary-btn").forEach(b=>{
-    if(!b.querySelector("svg")) b.innerHTML=illustratedIcon("check",18)+'<span>Marcar completada</span>';
-  });
   document.querySelectorAll(".modal-actions .primary-btn").forEach(b=>{
     if(!b.querySelector("svg")) b.innerHTML=illustratedIcon("save",16)+'<span>Guardar</span>';
   });
@@ -328,7 +327,7 @@ function getNextAction(d){
   }).sort((a,b)=>b.score-a.score||(minutesFromTime(a.t.time)??9999)-(minutesFromTime(b.t.time)??9999))[0].t;
 }
 function getFollowingAction(t){return tasksFor(state.date).filter(x=>!x.completed&&x.id!==t.id).sort((a,b)=>(minutesFromTime(a.time)??9999)-(minutesFromTime(b.time)??9999))[0]||data.tasks.find(x=>!x.date&&!x.completed)||null}
-function renderWhatNowLegacy(next){if(!next)return empty("No hay una acción pendiente. Puedes planificar una tarea o cerrar el día con calma.");const f=getFollowingAction(next);return `<div class="now-grid"><div class="now-main"><div class="kicker">AHORA</div><div class="now-title">${escape(next.title)}</div><div class="now-meta">${next.time?`${next.time} – ${timeEnd(next.time,next.estimatedMinutes||60)}`:"Sin horario"}</div><span class="priority-pill ${next.priority||"baja"}">Prioridad ${next.priority||"baja"}</span><button class="primary-btn" data-action="task-toggle" data-id="${next.id}">Marcar completada</button></div><div class="now-next"><div class="kicker">SIGUIENTE</div><strong>${escape(f?.title||"Nada pendiente")}</strong><span>Continúa con la siguiente acción disponible.</span></div></div>`}
+function renderWhatNowLegacy(next){return renderWhatNow(next)}
 function renderAgenda(tasks){if(!tasks.length)return empty("Este día todavía no tiene tareas.",'<button class="add-inline" data-action="modal" data-type="task-new">＋ Agregar tarea</button>');return `<div class="task-list">${[...tasks].sort((a,b)=>(a.time||"99:99").localeCompare(b.time||"99:99")).map(taskRow).join("")}</div><button class="add-inline" data-action="modal" data-type="task-new">＋ Agregar tarea</button>`}
 function taskRow(t){return `<div class="task-row ${t.completed?"done":""}"><button class="task-check ${t.completed?"checked":""}" data-action="task-toggle" data-id="${t.id}">${t.completed?"✓":""}</button><div class="task-time">${escape(t.time||"—")}</div><div class="task-title-wrap"><strong>${escape(t.title)}</strong>${t.note?`<small>${escape(t.note)}</small>`:""}${!t.date&&t.createdAt?`<small>${pendingAge(t.createdAt)}</small>`:""}</div>${t.priority?`<span class="priority-pill subtle ${t.priority}">${t.priority}</span>`:"<span></span>"}<button class="row-action" data-action="modal" data-type="task-edit" data-id="${t.id}">✎</button><button class="row-action" data-action="task-tomorrow" data-id="${t.id}">→</button><button class="row-action danger" data-action="task-delete" data-id="${t.id}">×</button></div>`}
 function pendingAge(createdAt){const diff=Math.max(0,Math.floor((parse(state.date)-parse(createdAt))/86400000));return diff===0?"Pendiente hoy":`Pendiente desde hace ${diff} día${diff===1?"":"s"}`}
@@ -480,7 +479,7 @@ document.addEventListener("click",e=>{
   if(a==="view"){state.view=el.dataset.view;render();return}
   if(a==="progress-period"){state.progressPeriod=el.dataset.period;state.page="progress";render();return}
   if(a==="today"){state.date=todayKey();state.month=key(new Date(new Date().getFullYear(),new Date().getMonth(),1));state.page="plan";state.view="planning";render();return}
-  if(a==="save-day"){data=save(data);toast("Día guardado");render();return}
+  if(a==="save-day"){ensureDay(data,state.date).savedAt=new Date().toISOString();data=save(data);toast(`Día ${fmtDate(parse(state.date))} guardado`);render();return}
   if(a==="notes-history"){state.open.notesHistory=!state.open.notesHistory;state.page="plan";state.view="day";render();return}
   if(a==="note-toggle"){const k=el.dataset.date;state.open["note:"+k]=state.open["note:"+k]!==true;render();return}
   if(a==="date-nav"){const n=Number(el.dataset.delta);if(state.view==="day")state.date=key(add(currentDate(),n));else if(state.view==="week"||state.view==="planning")state.date=key(add(currentDate(),n*7));else{const d=parse(state.month);d.setMonth(d.getMonth()+n);state.month=key(new Date(d.getFullYear(),d.getMonth(),1))}render();return}
@@ -598,12 +597,12 @@ function renderInsights(){
 function renderWhatNow(next){
   if(!next)return empty("No hay tareas por hacer para este día.",'<button class="add-inline" data-action="modal" data-type="task-new" data-planned-date="'+state.date+'">＋ Añadir tarea</button>');
   const following=getFollowingAction(next);
-  return `<div class="now-grid"><div class="now-main now-task-card"><div class="kicker">POR HACER AHORA</div><div class="now-task-line"><button class="task-check now-check" data-action="task-toggle" data-id="${next.id}" aria-label="Completar ${escape(next.title)}">${next.completed?"✓":""}</button><div><div class="now-title">${escape(next.title)}</div><div class="now-meta">${next.time?`${next.time} – ${timeEnd(next.time,next.estimatedMinutes||60)}`:"Sin horario"}</div><span class="priority-pill ${next.priority||"baja"}">Prioridad ${next.priority||"baja"}</span></div></div></div><div class="now-next"><div class="kicker">SIGUIENTE</div><strong>${escape(following?.title||"Nada pendiente")}</strong><span>Completa el check para avanzar.</span></div></div>`;
+  return `<div class="now-grid"><div class="now-main now-task-card"><div class="kicker">POR HACER</div><div class="now-task-line"><button class="task-check now-check ${next.completed?"checked":""}" data-action="task-toggle" data-id="${next.id}" aria-label="${next.completed?"Marcar pendiente":"Marcar listo"}: ${escape(next.title)}">${next.completed?"✓":""}</button><div><div class="now-title">${escape(next.title)}</div><div class="now-meta">${next.time?`${next.time} – ${timeEnd(next.time,next.estimatedMinutes||60)}`:"Sin horario"}</div><span class="task-state ${next.completed?"is-done":""}">${next.completed?"Listo":"Pendiente"}</span></div></div></div><div class="now-next"><div class="kicker">SIGUIENTE</div><strong>${escape(following?.title||"Nada pendiente")}</strong><span>Marca la casilla para actualizar el estado.</span></div></div>`;
 }
 
 function renderPlannerDay(d){
   const k=key(d),r=dayRecord(k),tasks=tasksFor(k),planned=dayHasPlan(k),name=cap(new Intl.DateTimeFormat("es-CL",{weekday:"long"}).format(d)),mood=r.mood||"Normal";
-  return `<article class="planner-day-card ${planned?"planned":""}" data-plan-day="${k}"><div class="planner-day-head"><div><span class="day-name">${escape(name)}</span><strong>${d.getDate()}</strong></div><div class="planner-day-actions"><button class="day-plan-toggle ${planned?"active":""}" data-action="plan-day-toggle" data-date="${k}">${planned?"Planificado":"Planificar"}</button><button class="day-open-btn" data-action="planner-day-open" data-date="${k}">Editar día</button></div></div><button class="planner-mood-summary" data-action="planner-day-open" data-date="${k}" aria-label="Editar estado de ${escape(name)}"><span>${moodIllustration(mood,34)}</span><small>${escape(mood)}</small></button><div class="planner-task-list">${tasks.length?tasks.slice(0,4).map(renderPlannerTask).join(""):"<div class=\"planner-empty-line\">Sin tareas. Pulsa Editar día para prepararlo.</div>"}</div><button class="add-inline planner-add" data-action="modal" data-type="task-new" data-planned-date="${k}">＋ Añadir tarea</button></article>`;
+  return `<article class="planner-day-card ${planned?"planned":""}" data-plan-day="${k}"><div class="planner-day-head"><div><span class="day-name">${escape(name)}</span><strong>${d.getDate()}</strong></div><div class="planner-day-actions"><button class="day-plan-toggle ${planned?"active":""}" data-action="plan-day-toggle" data-date="${k}">${planned?"Planificado":"Planificar"}</button><button class="day-open-btn" data-action="planner-day-open" data-date="${k}">Editar día</button></div></div><button class="planner-mood-summary" data-action="planner-day-open" data-date="${k}" aria-label="Editar estado de ${escape(name)}"><span>${moodIllustration(mood,36)}</span><small>${escape(mood)}</small></button><div class="planner-task-list">${tasks.length?tasks.slice(0,4).map(renderPlannerTask).join(""):`<div class="planner-empty-line">Sin tareas programadas.</div>`}</div><button class="add-inline planner-add" data-action="modal" data-type="task-new" data-planned-date="${k}">＋ Añadir tarea</button></article>`;
 }
 
 function appShell(){
