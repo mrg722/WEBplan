@@ -309,6 +309,47 @@ test("weekly Progress switches from Oct 5–11 to Oct 12–18 without leaking da
   assert.match(h.app.innerHTML, /0 \/ 7 tareas/);
 });
 
+test("weekly nonneg plans, hours, creatina and outcomes remain date isolated", () => {
+ const h=harness({seed:`data.nonNegotiables.push({id:"creatina",name:"Creatina",mode:"manual",days:[1,2],checks:{}});data.weekly["2026-10-05"]={nonnegPlans:{creatina:{days:[1],notify:true,reminderTime:"20:00"}},plannedDays:{}};`});
+ assert.ok(h.read('activeNonneg("2026-10-05").some(n=>n.id==="creatina")'));
+ assert.equal(h.read('activeNonneg("2026-10-06").some(n=>n.id==="creatina")'),false);
+ h.run('state.modal={type:"nonneg-outcome",id:"creatina",date:"2026-10-05"};saveNonnegOutcome("missed")');
+ assert.equal(h.read('nonnegOutcome(data.nonNegotiables.find(n=>n.id==="creatina"),"2026-10-05")'),'missed');
+ assert.equal(h.read('nonnegOutcome(data.nonNegotiables.find(n=>n.id==="creatina"),"2026-10-06")'),'pending');
+ h.run('state.modal={type:"nonneg-outcome",id:"creatina",date:"2026-10-05"};saveNonnegOutcome("done")');
+ assert.equal(h.read('nonnegDone(data.nonNegotiables.find(n=>n.id==="creatina"),"2026-10-05")'),true);
+ h.run('data.weekly["2026-10-05"].nonnegPlans["default-study"]={targetHours:3,days:[1]};');
+ assert.equal(h.read('nonnegTarget(data.nonNegotiables.find(n=>n.id==="default-study"),"2026-10-05")'),180);
+ assert.equal(h.read('nonnegTarget(data.nonNegotiables.find(n=>n.id==="default-study"),"2026-10-12")'),120);
+});
+
+test("reminders honor task opt-out and only pending scheduled nonnegotiables",()=>{
+ const h=harness({seed:`data.nonNegotiables=[{id:"creatina",name:"Creatina",mode:"manual",days:[1],checks:{},notify:true,reminderTime:"20:00"}];data.tasks=[{id:"yes",title:"Yes",date:"2026-10-05",notify:true,reminderTime:"19:00"},{id:"no",title:"No",date:"2026-10-05",notify:false,reminderTime:"19:00"}];`});
+ assert.equal(h.read('dueReminders(new Date(2026,9,5,18)).length'),0);
+ assert.equal(h.read('dueReminders(new Date(2026,9,5,21)).length'),2);
+ assert.equal(h.read('dueReminders(new Date(2026,9,6,21)).length'),0);
+ h.run('data.nonNegotiables[0].outcomes={"2026-10-05":"missed"};data.tasks[0].completed=true;');
+ assert.equal(h.read('dueReminders(new Date(2026,9,5,21)).length'),0);
+});
+
+test("nonneg modal saves hour goals, selected days and reminder only to chosen week",()=>{
+ const h=harness();h.run('state.modal={type:"nonneg-edit",id:"default-study"};');h.render();
+ h.form({targetHours:3.5,notify:true,reminderTime:"18:30"});
+ for(const control of h.controls('[data-nonneg-day]'))control.checked=control.dataset.nonnegDay==='1';
+ h.click('[data-action="modal-save"]');
+ assert.equal(h.read('nonnegTarget(data.nonNegotiables.find(n=>n.id==="default-study"),"2026-10-05")'),210);
+ assert.equal(h.read('activeNonneg("2026-10-06").some(n=>n.id==="default-study")'),false);
+ assert.equal(h.read('reminderFor(data.nonNegotiables.find(n=>n.id==="default-study"),"2026-10-05").time'),'18:30');
+ assert.equal(h.read('nonnegTarget(data.nonNegotiables.find(n=>n.id==="default-study"),"2026-10-12")'),120);
+});
+
+test("task notification preference propagates only to same-week copies",()=>{
+ const h=harness({seed:`data.tasks=[{id:"root",title:"Task",date:"2026-10-05",notify:false},{id:"copy",sourceId:"root",title:"Task",date:"2026-10-07",notify:false},{id:"later",sourceId:"root",title:"Task",date:"2026-10-12",notify:false}];state.modal={type:"task-edit",id:"root"};`});h.render();
+ h.form({notify:true,notifyAll:true,reminderTime:"09:30"});h.click('[data-action="modal-save"]');
+ assert.equal(h.read('data.tasks.find(t=>t.id==="copy").notify'),true);
+ assert.equal(h.read('data.tasks.find(t=>t.id==="later").notify'),false);
+});
+
 test("notification date query initializes the actual day route", () => {
   const h = harness({ search: "?date=2026-10-12&task=example" });
   assert.equal(h.read("state.date"), "2026-10-12");

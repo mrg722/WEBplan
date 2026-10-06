@@ -1,6 +1,6 @@
 // Cache ownership includes the deployment scope (several apps may share an origin).
 const CACHE_PREFIX = "plan20-" + encodeURIComponent(self.registration.scope) + "-v";
-const CACHE_VERSION = 7;
+const CACHE_VERSION = 8;
 const CACHE = CACHE_PREFIX + CACHE_VERSION;
 const SHELL = [
   "./",
@@ -22,8 +22,8 @@ const INDEX_URL = new URL("./index.html", self.registration.scope).href;
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(
     [...SHELL_URLS].map(url => new Request(url, { cache: "reload" }))
-  )));
-  // Let existing tabs finish with their current shell before activating an update.
+  )).then(() => self.skipWaiting()));
+  // The client reloads on controllerchange only after the complete new shell exists.
 });
 
 self.addEventListener("activate", event => {

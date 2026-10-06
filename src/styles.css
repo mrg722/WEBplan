@@ -693,6 +693,20 @@ button, summary { touch-action: manipulation; }
   .plan-subnav svg { width: 16px; height: 16px; }
 }
 .weekly-records { display:grid; gap:12px; }
+.nonneg-reminder { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin:6px 0 14px; padding:8px; background:#f2fafb; border-radius:8px; font-size:12px; }
+.nonneg-reminder label { display:flex; align-items:center; gap:6px; }
+.nonneg-reminder input[type=checkbox] { width:22px; height:22px; accent-color:#099e99; }
+.nonneg-reminder input[type=time] { max-width:115px; min-width:0; min-height:38px; border:1px solid #dce8ef; border-radius:7px; }
+.brand-motto { font-family:'Segoe Script','Brush Script MT',cursive; font-size:21px; font-style:italic; color:#173862; line-height:1.5; }
+.outcome-control { display:grid; justify-items:center; min-width:74px; min-height:48px; border:1px solid #dce8ef; border-radius:10px; background:#fff; color:#526b83; }
+.outcome-control b { font-size:24px; }.outcome-control small { font-size:10px; }
+.outcome-control.done,.weekly-outcome.done { color:#087f7c; background:#e1f8f5; }
+.outcome-control.missed,.weekly-outcome.missed { color:#b12c46; background:#fff0f3; }
+.training-nonneg { padding:12px 0; }.training-nonneg summary { display:flex; align-items:center; gap:8px; cursor:pointer; min-height:48px; font-weight:700; }
+.training-nonneg summary:after { content:'⌄'; margin-left:auto; }
+.outcome-options { display:grid; gap:12px; margin:20px 0; }.outcome-options button { min-height:48px; background:#e1f8f5; border:1px solid #79d1c9; border-radius:10px; color:#173862; }
+.weekly-outcome { width:30px; height:32px; border:1px solid #dce8ef; border-radius:6px; background:#fff; font-size:22px; }
+@media(max-width:760px){.sidebar,.sidebar.mobile-open,.mobile-menu,.mobile-scrim{display:none!important}.metric-row:has(.outcome-control){grid-template-columns:30px minmax(0,1fr) 76px;}}
 .goal-milestones { display:grid; gap:8px; margin-top:12px; }
 .goal-milestones label { display:flex; gap:8px; align-items:center; min-height:40px; font-size:13px; }
 .goal-milestones input { width:24px; height:24px; accent-color:#099e99; flex-shrink:0; }

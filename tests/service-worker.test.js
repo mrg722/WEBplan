@@ -6,7 +6,7 @@ import vm from "node:vm";
 const source = await readFile(new URL("../sw.js", import.meta.url), "utf8");
 const scope = "https://example.test/WEBplan/";
 const prefix = `plan20-${encodeURIComponent(scope)}-v`;
-const current = prefix + "7";
+const current = prefix + "8";
 
 function worker() {
   const listeners = {};
@@ -78,7 +78,7 @@ test("install precaches existing local shell files with HTTP cache bypass", asyn
     const relative = request.url.slice(scope.length) || "index.html";
     await access(new URL("../" + relative, import.meta.url));
   }
-  assert.equal(w.skips(), 0, "updates must wait until previous shell clients close");
+  assert.equal(w.skips(), 1, "activate only after the whole new shell is installed");
   const manifest = JSON.parse(await readFile(new URL("../manifest.webmanifest", import.meta.url), "utf8"));
   assert.equal(new URL(manifest.start_url, scope).href, scope);
   assert.equal(new URL(manifest.scope, scope).href, scope);
@@ -94,7 +94,7 @@ test("incomplete precache rejects installation", async () => {
 
 test("activation deletes only older version caches owned by this deployment", async () => {
   const w = worker();
-  const others = ["unrelated-cache", "plan20-v6", "plan20-v5", prefix + "8", prefix + "metadata", `plan20-${encodeURIComponent("https://example.test/other/")}-v6`];
+  const others = ["unrelated-cache", "plan20-v6", "plan20-v5", prefix + "9", prefix + "metadata", `plan20-${encodeURIComponent("https://example.test/other/")}-v6`];
   for (const name of [current, prefix + "6", ...others]) w.stores.set(name, new Map());
   await w.event("activate");
   assert.deepEqual(w.deleted, [prefix + "6"]);

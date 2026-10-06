@@ -20,7 +20,16 @@ export async function requestPermission() {
 
 export async function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return null;
-  try { return await navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" }); } catch { return null; }
+  try {
+    const hadController=!!navigator.serviceWorker.controller;
+    let reloaded=false;
+    navigator.serviceWorker.addEventListener?.("controllerchange",()=>{
+      if(hadController&&!reloaded){reloaded=true;location.reload();}
+    });
+    const registration=await navigator.serviceWorker.register("./sw.js",{scope:"./",updateViaCache:"none"});
+    await registration.update?.();
+    return registration;
+  } catch { return null; }
 }
 
 export async function getRegistration() {

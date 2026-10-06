@@ -21,6 +21,18 @@ if (!/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/.test(base)) throw Error('Us
   assert.equal(await page.locator('.planner-mood-summary').count(),7);
   assert.equal(await page.locator('.top-notes-btn').count(),1);
   await click('[data-view=day]');
+  assert.equal(await page.locator('.mobile-menu').count(),0);
+  assert.match(await page.locator('.mobile-brand').innerText(),/Cree en ti/);
+  await click('[data-action=nonneg-outcome][data-id=default-sleep]');
+  await page.locator('[data-sleep-hours]').selectOption('7.5');
+  await page.locator('[data-nonneg-notify=default-sleep]').last().uncheck();
+  await click('[data-action=sleep-hours-save]');
+  assert.match(await page.locator('[data-action=nonneg-outcome][data-id=default-sleep]').innerText(),/7.5 h/);
+  assert.equal((await record()).days['2026-10-05'].sleepMinutes,450);
+  assert.equal((await record()).nonNegotiables.find(n=>n.id==='default-sleep').reminders['2026-10-05'].enabled,false);
+  await page.locator('.training-nonneg summary').click();await page.locator('[data-training-choice]').selectOption('default-training-3');
+  await click('[data-action=nonneg-outcome][data-id=default-training-3]');await click('[data-action=outcome-save][data-value=missed]');
+  assert.equal((await record()).nonNegotiables.find(n=>n.id==='default-training-3').outcomes['2026-10-05'],'missed');
   await click('[data-action=mood][data-mood=Bien]');
   await page.locator('[data-field=energy]').fill('0');
   await page.locator('[data-field=energy]').dispatchEvent('change');
